@@ -1,5 +1,5 @@
 <template>
-  <v-app-bar app color="primary" dark max-width="100vw">
+  <v-app-bar app  max-width="100vw">
     <span hidden>{{$parent.action}}</span>
     {{page() * nrows() + 1}} - {{Math.min((page() + 1) * nrows(), count())}} из {{count()}}
     <v-spacer></v-spacer>
@@ -31,7 +31,7 @@
   </v-app-bar>
 </template>
 <script>
-//import { openMap } from "../main";
+
 
 export default {
   name: "Pagination",
@@ -46,12 +46,6 @@ export default {
   },
   methods: {
     OpenMapData: function() {
-      /*
-      if (this.editid == null) return openMap.get(this.id).data;
-      else
-        return openMap.get(this.id).data.ReferEdit.Editors[this.editid].joinRow
-          .FindConrol;
-      */
       return this.findData;
     },
     count: function() {

@@ -1,8 +1,8 @@
 <template>
     <div   v-bind:hidden="!visible">
       <v-app-bar app>
-        <v-app-bar-nav-icon @click="mainObj.drawer = true"></v-app-bar-nav-icon>
-        <v-toolbar-title></v-toolbar-title>
+        <v-app-bar-nav-icon @click="mainObj.drawer = !mainObj.drawer"></v-app-bar-nav-icon>
+        <v-toolbar-title>Рабочее место оператора НСИ</v-toolbar-title>
         <v-spacer></v-spacer>
       </v-app-bar>
       <v-main>

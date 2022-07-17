@@ -92,6 +92,12 @@ export default {
             window.location = baseUrl + "Home/logout";
             return
           }
+          if (lnk == "test_api") {
+            mainObj.alert("Тест API", "Test OK !")
+            return;
+          }
+
+          
           
         }
         this.open(item);
