@@ -1,6 +1,5 @@
 <template>
   <v-app>
-
     <a target="_blanck" hidden ref="openFileLink"></a>
 
     <v-dialog v-model="mainObj.openAlert" persistent>
@@ -20,19 +19,20 @@
       </v-card>
     </v-dialog>
 
-    <v-navigation-drawer v-model="mainObj.drawer" app width="auto" left>
-        <p v-if="loading">Загрузка...</p>
-        <v-treeview
-          v-else
-          :items="treejson"
-          :hoverable="hoverable"
-          :open-on-click="openOnClick"
-          dense
-        >
-          <template slot="label" slot-scope="{ item }">
-            <div @click="handleselect(item)">{{ item.text }}</div>
-          </template>
-        </v-treeview>
+    <v-navigation-drawer color="primary" dark v-model="mainObj.drawer" app width="auto" left>
+      <p v-if="loading">Загрузка...</p>
+      <v-treeview
+        v-else
+        :items="treejson"
+        :hoverable="hoverable"
+        :open-on-click="openOnClick"
+        dense
+      >
+        <template slot="label" slot-scope="{ item }">
+          <div @click="handleselect(item)">{{ item.text }}</div>
+        </template>
+      </v-treeview>
+      
     </v-navigation-drawer>
 
     <template v-for="item in openIDs">
@@ -46,9 +46,7 @@
 import { mainObj, openIDs, prodaction, baseUrl, openMap } from "./main";
 import Comp1 from "./components/Comp1.vue";
 import Finder from "./components/Finder.vue";
-import Dogovors from "./components/Dogovors.vue";
-import Uxrep from "./components/Uxrep.vue";
-import Tarifs from "./components/Tarifs.vue";
+
 export default {
   name: "App",
   data: function() {
@@ -63,7 +61,6 @@ export default {
   },
   methods: {
     back: function() {
-      //mainObj.alert("test", mainObj.curhistory);
       if (mainObj.curhistory > 0) {
         mainObj.curhistory = mainObj.curhistory - 1;
         mainObj.drawer = false;
@@ -82,16 +79,20 @@ export default {
     },
     handleselect: function(item) {
       if (!item.children) {
-        //alert(item.attributes.link1);
         let lnk = item.attributes.link1;
         if (lnk) {
           if (lnk.substring(0, 1) == "/") {
-              lnk = baseUrl + lnk;
-              this.$refs.openFileLink.href = lnk;
-              this.$refs.openFileLink.click();
-              mainObj.drawer = false;
-              return;
+            lnk = baseUrl + lnk;
+            this.$refs.openFileLink.href = lnk;
+            this.$refs.openFileLink.click();
+            mainObj.drawer = false;
+            return;
           }
+          if (lnk == "exit") {
+            window.location = baseUrl + "Home/logout";
+            return
+          }
+          
         }
         this.open(item);
         mainObj.drawer = false;
@@ -114,10 +115,7 @@ export default {
         openMap.set(id, obj);
         openIDs.push(id);
       }
-      //Setcurrent(id);
       mainObj.current = id;
-      //mainObj.curhistory = mainObj.curhistory + 1;
-      //mainObj.history.splice(mainObj.curhistory, mainObj.history.length, id);
       //25.05.2022 история по якорям
       window.location.hash = id;
     },
@@ -126,11 +124,6 @@ export default {
       let control = p.params ? Finder : Comp1;
       let params = p.params;
       let SQLParams = null;
-      if (p.link1 == "RegulationPrint.Dgs.DogovorList") control = Dogovors;
-      if (p.link1 == "RegulationPrint.ParamReports.ParReports") control = Uxrep;
-      if (params == "1550") control = Uxrep;
-      if (params == "1451") control = Uxrep;
-      if (p.link1 == "tariffs") control = Tarifs;
       return {
         Conrol: control,
         Params: params,
@@ -151,22 +144,10 @@ export default {
     let data = await response.json();
     this.treejson = data;
     this.loading = false;
-    
-    //стартовый якорь 25.05.2022
-    let hi = window.location.hash.replace('#', '');
-    if (hi == "839")
-     {
-      openMap.set(hi,
-      {
-        Control: Dogovors,
-        Params: "1445",
-        SQLParams: null,
-        data: {}
-      });
-      openIDs.push(hi);
-      mainObj.current = hi;
-     }
 
+    //стартовый якорь 25.05.2022
+    /*
+    let hi = window.location.hash.replace("#", "");
      if (hi == "81")
      {
       openMap.set(hi,
@@ -176,9 +157,11 @@ export default {
         SQLParams: null,
         data: {}
       });
+
       openIDs.push(hi);
       mainObj.current = hi;
      }
+     */
   }
 };
 </script>

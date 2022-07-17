@@ -1,19 +1,19 @@
 import Vue from 'vue';
 import App from './App.vue';
 
-import Comp2 from './components/Comp1.vue';
+import Comp1 from './components/Comp1.vue';
 import vuetify from './plugins/vuetify';
 
 
 
 
 Vue.config.productionTip = true;
-const prodaction = false;
+const prodaction = true;
 
 let openMap = new Map();
 openMap.set("-1",
   {
-    Control: Comp2,
+    Control: Comp1,
     Params: "",
     SQLParams: null,
     data: {}
@@ -23,9 +23,9 @@ let openIDs = [];
   openIDs.push("-1");  
 
 
-//запускаем нужную форму через стартовый якорь, например #839 (договоры), #81 тарифы  
+//запускаем нужную форму через стартовый якорь, например  #81 тарифы  
 let mainObj = {
-  message: "ого",
+  message: "__",
   drawer: false,
   current: "-1",
   openAlert: false,
@@ -137,12 +137,4 @@ new Vue({
 
 export { openMap, mainObj, openIDs, prodaction, baseUrl }
 
-/*
-Обновления май 2022
-1. Поле поиска по DisplayField
-2. Модальное окно фильтров, переработан дизайн
-3. slot для таблицы и формы редактирования, по одному тесту сделано
-4. Отработка на событие resize  с правильным пересчетом размеров гридов
-5. Добавляются якоря при переходам по ссылкам, поддерживает история переходов в браузере. Запуск по якорю 839 или
-   81
-*/
+

@@ -18,15 +18,7 @@
                       @click:append="sortChangeIndex(column, index)"
                   ></v-text-field>
                 </td>
-                <!--
-                <td style="border-bottom: none;width:100px">
-                  <v-select
-                    :items="items"
-                    v-model="column.Sort"
-                    @change="(event)=>sortChange(event, index)"
-                  ></v-select>
-                </td>
-                -->
+                
 
                 <td style="border-bottom: none;width:50px">
                   {{column.SortOrder}}
@@ -52,8 +44,8 @@
 
 
     <div v-bind:hidden="mode!='grid'" style="height:100vh;maxheight:100vh;overflow:auto">
-      <v-app-bar app color="primary" dark v-if="!stateDrawer" max-width="100vw" height="65">
-        <v-app-bar-nav-icon v-if="(editid == null)" @click="mainObj.drawer = true"></v-app-bar-nav-icon>
+      <v-app-bar app  v-if="!stateDrawer" max-width="100vw" height="65">
+        <v-app-bar-nav-icon v-if="(editid == null)" @click="mainObj.drawer = !mainObj.drawer"></v-app-bar-nav-icon>
         <v-toolbar-title>{{Descr}}</v-toolbar-title>
         <v-spacer></v-spacer>
         <v-spacer></v-spacer>
@@ -156,17 +148,7 @@
                     <v-list-item-title>Экспорт в CSV</v-list-item-title>
                   </v-list-item-content>
                 </v-list-item>
-                <!--
-                <v-list-item key="11" @click="loadFile()">
-                  <v-list-item-icon>
-                    <v-icon>mdi-database-plus</v-icon>
-                  </v-list-item-icon>
-                  <v-list-item-content>
-                    <v-list-item-title>Файлы</v-list-item-title>
-                    <a target="_blanck" hidden ref="fileLink2"></a>
-                  </v-list-item-content>
-                </v-list-item>
-                -->
+                
                 <v-list-item key="4" @click="openDetail()" v-if="OpenMapData().KeyValue">
                   <v-list-item-icon>
                     <v-icon>mdi-details</v-icon>
