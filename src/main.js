@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import App from './App.vue';
 
-import Comp1 from './components/Comp1.vue';
+import Comp1 from './components/Finder.vue';
 import vuetify from './plugins/vuetify';
 
 
@@ -9,25 +9,30 @@ import vuetify from './plugins/vuetify';
 
 Vue.config.productionTip = true;
 const prodaction = true;
+let start = "98"
+
 
 let openMap = new Map();
-openMap.set("-1",
+openMap.set(start,
   {
     Control: Comp1,
-    Params: "",
+    Params: "150",
     SQLParams: null,
     data: {}
   });
 
 let openIDs = [];
-  openIDs.push("-1");  
+  openIDs.push(start);  
+
+//21.07.2022
+window.location.hash = start  
 
 
 //запускаем нужную форму через стартовый якорь, например  #81 тарифы  
 let mainObj = {
   message: "__",
   drawer: false,
-  current: "-1",
+  current: start,
   openAlert: false,
   alert: function (title, text) {
     this.alertConfirm = false;
@@ -42,7 +47,7 @@ let mainObj = {
     this.confirmAction = action;
     this.openAlert = true;
   },
-  history: ["-1"],
+  history: [start],
   curhistory: 0,
 
   gridHeight: function () {

@@ -151,23 +151,36 @@ export default {
     this.treejson = data;
     this.loading = false;
 
-    //стартовый якорь 25.05.2022
+    
     /*
-    let hi = window.location.hash.replace("#", "");
-     if (hi == "81")
+     let hi = window.location.hash.replace("#", "");
+     if (hi == "97")
      {
-      openMap.set(hi,
-      {
-        Control: Tarifs,
-        Params: "133",
-        SQLParams: null,
-        data: {}
-      });
-
+        openMap.set(hi,
+        {
+          Control: Finder,
+          Params: "149",
+          SQLParams: null,
+          data: {}
+        });
       openIDs.push(hi);
       mainObj.current = hi;
      }
-     */
+
+     if (hi == "98")
+     {
+        openMap.set(hi,
+        {
+          Control: Finder,
+          Params: "150",
+          SQLParams: null,
+          data: {}
+        });
+      openIDs.push(hi);
+      mainObj.current = hi;
+     }
+	 */
+     
   }
 };
 </script>
