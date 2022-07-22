@@ -1,15 +1,13 @@
 import Vue from 'vue';
 import App from './App.vue';
 
-import Comp1 from './components/Finder.vue';
+import Comp1 from './components/Comp1.vue';
 import vuetify from './plugins/vuetify';
-
-
 
 
 Vue.config.productionTip = true;
 const prodaction = true;
-let start = "98"
+let start = "-1"
 
 
 let openMap = new Map();
@@ -58,7 +56,7 @@ let mainObj = {
   dateformat: function (d, f) {
     if (!d) return d;
 
-    if (d.length != 24) {
+    if (d.length < 19) {
       let res = f.match(/0\.(0+)/);
 
       let n = 0;

@@ -3,37 +3,41 @@
 
   
   <div v-bind:hidden="!visible" style="height:100vh;maxheight:100vh;overflow:auto">
-
     <v-dialog v-model="openFilter" persistent>
       <v-card>
-      <v-card-title>Фильтровка и сортировка</v-card-title>
-      <div style="height:60vh;maxheight:60vh;overflow:auto">
-        <v-simple-table v-if="!load" dense light>
-          <template v-slot:default>
-            <tbody>
-              <tr v-for="(column, index) in OpenMapData().Fcols" :key="column.FieldName" style="background-color:white;" >
-                <td style="border-bottom: none;">
-                  <v-text-field :label="column.FieldCaption" v-model="column.FindString"
-                      :append-icon="getIcon(column)"
-                      @click:append="sortChangeIndex(column, index)"
-                  ></v-text-field>
-                </td>
-                
-
-                <td style="border-bottom: none;width:50px">
-                  {{column.SortOrder}}
-                  <span hidden>{{rangSort}}</span>
-                  <span hidden>{{nactord}}</span>
-                  
-                </td>
-
-              </tr>
-            </tbody>
-          </template>
-        </v-simple-table>
-      
-      
-    </div>
+        <v-card-title>Фильтровка и сортировка</v-card-title>
+        <div style="height:60vh;maxheight:60vh;overflow:auto">
+          <v-simple-table v-if="!load" dense light>
+            <template v-slot:default>
+              <tbody>
+                <tr
+                  v-for="(column, index) in OpenMapData().Fcols"
+                  :key="column.FieldName"
+                  style="background-color:white;"
+                >
+                  <td style="border-bottom: none;">
+                    <v-badge
+                      style="width:100%"
+                      :content="column.SortOrder"
+                      color="info"
+                      overlap
+                      top
+                    >
+                      <v-text-field
+                        :label="column.FieldCaption"
+                        v-model="column.FindString"
+                        :prepend-inner-icon="getIcon(column)"
+                        @click:prepend-inner="sortChangeIndex(column, index)"
+                      ></v-text-field>
+                    </v-badge>
+                    <span hidden>{{rangSort}}</span>
+                    <span hidden>{{nactord}}</span>
+                  </td>
+                </tr>
+              </tbody>
+            </template>
+          </v-simple-table>
+        </div>
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn color="green darken-1" text @click="updateTab()">ОК</v-btn>
@@ -42,7 +46,7 @@
       </v-card>
     </v-dialog>
 
-
+    
     <div v-bind:hidden="mode!='grid'" style="height:100vh;maxheight:100vh;overflow:auto">
       <v-app-bar app  v-if="!stateDrawer" max-width="100vw" height="65">
         <v-app-bar-nav-icon v-if="(editid == null)" @click="mainObj.drawer = !mainObj.drawer"></v-app-bar-nav-icon>

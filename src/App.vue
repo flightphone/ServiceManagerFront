@@ -46,6 +46,7 @@
 import { mainObj, openIDs, prodaction, baseUrl, openMap } from "./main";
 import Comp1 from "./components/Comp1.vue";
 import Finder from "./components/Finder.vue";
+import Declare from "./components/Declare"
 
 export default {
   name: "App",
@@ -96,9 +97,6 @@ export default {
             mainObj.alert("Тест API", "Test OK !")
             return;
           }
-
-          
-          
         }
         this.open(item);
         mainObj.drawer = false;
@@ -130,6 +128,8 @@ export default {
       let control = p.params ? Finder : Comp1;
       let params = p.params;
       let SQLParams = null;
+      //22.07.2022 Вековая мечта, редактрор колонок
+      if (params == "75") control = Declare;
       return {
         Conrol: control,
         Params: params,
