@@ -36,7 +36,9 @@
     </v-navigation-drawer>
 
     <template v-for="item in openIDs">
+      <template>
       <uni-comp v-bind:id="item" v-bind:key="item"></uni-comp>
+      </template>
     </template>
   </v-app>
 </template>
@@ -129,7 +131,7 @@ export default {
       let params = p.params;
       let SQLParams = null;
       //22.07.2022 Вековая мечта, редактрор колонок
-      if (params == "75") control = Declare;
+      if (params == "75" || params == "129") control = Declare;
       return {
         Conrol: control,
         Params: params,
