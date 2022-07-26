@@ -528,6 +528,8 @@ let Finder = {
       bd.append("EditProc", mid.DelProc);
       bd.append("SQLParams", JSON.stringify(SQLParams));
       bd.append("KeyF", mid.KeyF);
+	  bd.append("IdDeclare", this.params);
+	  bd.append("mode", "delete");
 
       const response = await fetch(url, {
         method: "POST",
@@ -628,6 +630,9 @@ let Finder = {
       bd.append("EditProc", data.EditProc);
       bd.append("SQLParams", JSON.stringify(SQLParams));
       bd.append("KeyF", data.KeyF);
+	  bd.append("IdDeclare", this.params);
+	  bd.append("mode", this.mode);
+	  
 
       const response = await fetch(url, {
         method: "POST",

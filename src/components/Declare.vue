@@ -9,7 +9,7 @@
       </v-btn>
       <v-btn icon @click="del()">
         <v-icon>mdi-delete</v-icon>
-      </v-btn>      
+      </v-btn>
 
     </template>
   </Finder>
@@ -30,41 +30,44 @@ export default {
   },
   components: { Finder },
   methods: {
-	del: function() {
+    del: function () {
       let c = openMap.get(this.id).data.curRow;
       if (c < 0 || c > openMap.get(this.id).data.MainTab.length - 1) return;
-      let id = openMap.get(this.id).data.MainTab[c]["iddeclare"].toString();
+      let ido = openMap.get(this.id).data.MainTab[c]["iddeclare"];
+      if (ido == null)
+        ido = openMap.get(this.id).data.MainTab[c]["IdDeclare"];
+      let id = ido.toString();
       let lnk = baseUrl + "React/ClearColumn?id=" + id;
-     
+
       fetch(lnk, {
         method: "GET"
       })
-        .then(function(result) {
+        .then(function (result) {
           return result.json();
         })
-        .then(function(msg) {
-          mainObj.alert("Колонки таблиц", msg.Error);
-        });
-    },
-	
-    update: function() {
-      let c = openMap.get(this.id).data.curRow;
-      if (c < 0 || c > openMap.get(this.id).data.MainTab.length - 1) return;
-      let id = openMap.get(this.id).data.MainTab[c]["iddeclare"].toString();
-      let lnk = baseUrl + "React/UpdateColumn?id=" + id;
-     
-      fetch(lnk, {
-        method: "GET"
-      })
-        .then(function(result) {
-          return result.json();
-        })
-        .then(function(msg) {
+        .then(function (msg) {
           mainObj.alert("Колонки таблиц", msg.Error);
         });
     },
 
-    save: function() {
+    update: function () {
+      let c = openMap.get(this.id).data.curRow;
+      if (c < 0 || c > openMap.get(this.id).data.MainTab.length - 1) return;
+      let id = openMap.get(this.id).data.MainTab[c]["iddeclare"].toString();
+      let lnk = baseUrl + "React/UpdateColumn?id=" + id;
+
+      fetch(lnk, {
+        method: "GET"
+      })
+        .then(function (result) {
+          return result.json();
+        })
+        .then(function (msg) {
+          mainObj.alert("Колонки таблиц", msg.Error);
+        });
+    },
+
+    save: function () {
       let c = openMap.get(this.id).data.curRow;
       if (c < 0 || c > openMap.get(this.id).data.MainTab.length - 1) return;
       let id = openMap.get(this.id).data.MainTab[c]["iddeclare"].toString();
@@ -73,10 +76,10 @@ export default {
       fetch(lnk, {
         method: "GET"
       })
-        .then(function(result) {
+        .then(function (result) {
           return result.json();
         })
-        .then(function(msg) {
+        .then(function (msg) {
           mainObj.alert("Колонки таблиц", msg.Error);
         });
     }

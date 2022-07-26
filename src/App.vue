@@ -131,7 +131,7 @@ export default {
       let params = p.params;
       let SQLParams = null;
       //22.07.2022 Вековая мечта, редактрор колонок
-      if (params == "75" || params == "129") control = Declare;
+      if (params == "75") control = Declare;
       return {
         Conrol: control,
         Params: params,
