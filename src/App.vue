@@ -89,7 +89,7 @@ export default {
             lnk = baseUrl + lnk;
             this.$refs.openFileLink.href = lnk;
             this.$refs.openFileLink.click();
-            mainObj.drawer = false;
+            //mainObj.drawer = false;
             return;
           }
           if (lnk == "exit") {
@@ -102,7 +102,7 @@ export default {
           }
         }
         this.open(item);
-        mainObj.drawer = false;
+        //mainObj.drawer = false;
       }
     },
     handleClose: function() {

@@ -6,7 +6,7 @@ import vuetify from './plugins/vuetify';
 
 
 Vue.config.productionTip = true;
-const prodaction = false;
+const prodaction = true;
 let start = "-1"
 
 
@@ -54,6 +54,9 @@ let mainObj = {
   },
   selectedColor: "LightGreen",
   dateformat: function (d, f) {
+    if (f == 'password')
+      return '*****';
+
     if (!d) return d;
 
     if (f=="text")
