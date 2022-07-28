@@ -56,7 +56,7 @@
             hide-details
             prepend-inner-icon="mdi-magnify"
             single-line
-            v-model="OpenMapData().Fcols[dispIndex].FindString"
+            v-model="OpenMapData().SearchCols[0].FindString"
             @input="updateTab()"
           ></v-text-field>
 
@@ -402,8 +402,6 @@ let Finder = {
     },
 
     setFilter: function(b) {
-      //b = false;
-      //alert(this.dispIndex);
       this.openFilter = b;
     },
 
@@ -453,14 +451,21 @@ let Finder = {
         data: {}
       };
       let newid = this.id + "_" + rw[mid.KeyF];
+      
+      //пересоздаем заново
+      if (openMap.get(newid) != null)
+      {
+        openMap.delete(newid);
+      }
+      openMap.set(newid, obj);
+      openIDs.push(newid);
+      /*
       if (openMap.get(newid) == null) {
         openMap.set(newid, obj);
         openIDs.push(newid);
       }
+      */
       mainObj.current = newid;
-      //mainObj.curhistory = mainObj.curhistory + 1;
-      //mainObj.history.splice(mainObj.curhistory, mainObj.history.length, newid);
-      //25.05.2022 история по якорям
       window.location.hash = newid;
     },
     csv: function() {
@@ -507,9 +512,13 @@ let Finder = {
       if (mid.curRow == null) return;
       let rw = mid.MainTab[mid.curRow];
       let val = rw[mid.DispField];
+      if (val == null)
+        val = "Удалить запись?"
+      else
+        val = "Удалить запись '" + val + "'?"  
       mainObj.confirm(
         this.Descr,
-        "Удалить запись '" + val + "'?",
+        val,
         this.rowDelete
       );
     },
@@ -528,8 +537,8 @@ let Finder = {
       bd.append("EditProc", mid.DelProc);
       bd.append("SQLParams", JSON.stringify(SQLParams));
       bd.append("KeyF", mid.KeyF);
-	  bd.append("IdDeclare", this.params);
-	  bd.append("mode", "delete");
+      bd.append("IdDeclare", this.params);
+      bd.append("mode", "delete");
 
       const response = await fetch(url, {
         method: "POST",
@@ -562,11 +571,12 @@ let Finder = {
       const url = baseUrl + "React/FinderStart";
       let bd = new FormData();
       let mid = this.OpenMapData();
+      let allcols = mid.Fcols.concat(mid.SearchCols)
       const IdDeclare = this.params;
       bd.append("id", IdDeclare);
       bd.append("mode", "data");
       bd.append("page", mid.page.toString());
-      bd.append("Fc", JSON.stringify(mid.Fcols));
+      bd.append("Fc", JSON.stringify(allcols)); //mid.Fcols
       if (mid.SQLParams) bd.append("SQLParams", JSON.stringify(mid.SQLParams));
 
       if (mid.TextParams)
@@ -618,7 +628,8 @@ let Finder = {
       for (let f in data.TextParams) {
         data.WorkRow[f] = data.TextParams[f];
       }
-
+      //27.07.2022
+      this.postEdit(data);
       let SQLParams = {};
       data.ReferEdit.SaveFieldList.map(f => {
         SQLParams[f] = data.WorkRow[f];
@@ -630,10 +641,8 @@ let Finder = {
       bd.append("EditProc", data.EditProc);
       bd.append("SQLParams", JSON.stringify(SQLParams));
       bd.append("KeyF", data.KeyF);
-	  bd.append("IdDeclare", this.params);
-	  bd.append("mode", this.mode);
-	  
-
+      bd.append("IdDeclare", this.params);
+      bd.append("mode", this.mode);
       const response = await fetch(url, {
         method: "POST",
         mode: prodaction ? "no-cors" : "cors",
@@ -680,10 +689,37 @@ let Finder = {
       data.ColumnTab.map(column => {
         data.WorkRow[column] = "";
       });
+      this.initEdit(data)
       this.nadd = this.nadd + 1;
       this.uid = "uid" + this.nadd.toString();
       this.mode = "add";
     },
+    //checklist 27.07.2022
+    initEdit: function(data){
+      data.ReferEdit.Editors.map(ed => {
+        if (ed.joinRow!=null && ed.joinRow.classname == "CheckList")
+        {
+          let src = ed.joinRow.FindConrol.KeyF;
+          let dst = ed.joinRow.fields[src];
+          let lll = data.WorkRow[dst].split(',')
+          ed.joinRow.FindConrol.MainTab.map(rw => {rw.check = lll.includes(rw[src])})
+        }
+      });
+    },
+
+    postEdit: function(data){
+      data.ReferEdit.Editors.map(ed => {
+        if (ed.joinRow!=null && ed.joinRow.classname == "CheckList")
+        {
+          let src = ed.joinRow.FindConrol.KeyF;
+          let dst = ed.joinRow.fields[src];
+          let lll = []; 
+          ed.joinRow.FindConrol.MainTab.filter(rw => rw.check).map(d => lll.push(d[src]))
+          data.WorkRow[dst] = lll.join()
+        }
+      });
+    },
+
     edit: function() {
       let data = this.OpenMapData();
       if (data.WorkRow == null) data.WorkRow = {};
@@ -700,6 +736,7 @@ let Finder = {
           );
         }
       });
+      this.initEdit(data);
       this.nadd = this.nadd + 1;
       this.uid = "uid" + this.nadd.toString();
       this.mode = "edit";
@@ -740,12 +777,14 @@ let Finder = {
       let md = OpenMapData();
       md.curRow = 0;
       this.Descr = md.Descr + " (выбор)";
+      /*
       md.Fcols.map((column, index)=>{
          if (column.FieldName == md.DispField) 
          {
             this.dispIndex = index
          }
       });
+      */
       //размер окна
       md.resize = this.resize;
       //размеры окон 24/05/2022
@@ -796,12 +835,14 @@ let Finder = {
       });
 
       //19/05/2022
+      /*
       data.Fcols.map((column, index)=>{
          if (column.FieldName == data.DispField) 
          {
             this.dispIndex = index
          }
       });
+      */
 
       
       

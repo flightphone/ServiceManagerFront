@@ -32,6 +32,13 @@
               <template v-else>
                 <tr v-for="(column, index) in findData.ReferEdit.Editors" :key="index" style="background-color:white">
                   <td style="border-bottom: none;">
+                  <!--28.07.2022-->
+                   <v-textarea v-if="column.DisplayFormat=='text'" 
+                     :label="column.FieldCaption"
+                      :key="column.FieldName + uid"
+                      v-model="findData.WorkRow[column.FieldName]"
+                    ></v-textarea>  
+                    <template v-else>
                     <v-text-field
                       v-if="column.joinRow==null"
                       :label="column.FieldCaption"
@@ -39,6 +46,14 @@
                       v-model="findData.WorkRow[column.FieldName]"
                     ></v-text-field>
                     <template v-else>
+                     <!--выводим checklist 27.07.2022--> 
+                      <v-text-field
+                      v-if="column.joinRow.classname == 'CheckList'"
+                      :label="column.FieldCaption"
+                      :key="column.FieldName + uid"
+                      v-model="findData.WorkRow[column.FieldName]"
+                    ></v-text-field>
+
                       <v-text-field
                         v-if="column.joinRow.classname == 'Bureau.Finder'"
                         :label="column.FieldCaption"
@@ -46,7 +61,7 @@
                         v-model="findData.WorkRow[column.FieldName]"
                         append-icon="mdi-magnify"
                         @click:append="open(index)"
-						readonly
+                        readonly
                       ></v-text-field>
 
                       <v-select
@@ -59,6 +74,9 @@
                         v-model="findData.WorkRow[column.joinRow.valField]"
                         @change="(event)=>sortChange(event, column)"
                       ></v-select>
+
+
+                    </template>
                     </template>
                   </td>
                 </tr>
@@ -66,6 +84,44 @@
             </tbody>
           </template>
         </v-simple-table>
+        <template v-if="!readonly">
+      <template v-for="(column, index) in findData.ReferEdit.Editors">
+        <template v-if="column.joinRow != null && column.joinRow.classname == 'CheckList'">
+            <span style="margin-left:15px"
+            :key="index"
+            >{{column.joinRow.FindConrol.Descr}}:</span>
+            <v-simple-table 
+            dense
+            :key="index"
+            >
+            <template v-slot:default>
+              <tbody v-if="(nupdate > 0) && uid !=''">
+              <tr dense
+              style="border-bottom: none;"
+              v-for="(row, index) in column.joinRow.FindConrol.MainTab" :key="index">
+              
+              <td dense>
+                <v-checkbox
+                  v-model="row.check"
+                >
+                </v-checkbox>
+              </td>
+
+              <td dense
+                  v-for="col in column.joinRow.FindConrol.Fcols"
+                  :key="col.FieldName"
+                >{{row[col.FieldName]}}</td>
+              
+              
+              </tr>
+              </tbody>
+            </template>
+            </v-simple-table>
+
+          
+        </template>
+      </template>
+      </template>      
         </slot>
       </v-main>
     </div>

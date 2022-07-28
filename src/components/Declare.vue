@@ -1,25 +1,99 @@
 <template>
+<v-fragment>
+     <v-dialog v-model="openEditor" persistent>
+      <v-card>
+      <v-card-title>Редактор колонок</v-card-title>
+      <div style="height:60vh;maxheight:60vh;overflow:auto">
+        <v-simple-table dense light>
+          <template v-slot:default>
+            <tbody>
+              <tr v-for="(column, index) in columns" :key="index" style="background-color:white;" >
+                <td style="border-bottom: none;width: 15px;">
+                  <v-checkbox v-model="column.visible">
+                  </v-checkbox>
+                </td>
+                <td style="border-bottom: none; width: 100px;">
+                  <v-text-field label="№" v-model="column.ord"></v-text-field>
+                </td>
+                <td style="border-bottom: none;">
+                  <v-text-field :label="column.fieldname" v-model="column.fieldcaption"></v-text-field>
+                </td>
+                <td style="border-bottom: none;">
+                  <v-text-field label="Формат" v-model="column.displayformat"></v-text-field>
+                </td>
+              </tr>  
+            </tbody>
+          </template>
+        </v-simple-table>
+      </div>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="green darken-1" text @click="SaveColumn()">ОК</v-btn>
+          <v-btn color="green darken-1" text @click="setEditor(false)">Отмена</v-btn>
+        </v-card-actions>
+      </v-card>
+
+    </v-dialog>
+
   <Finder :id="id" :visible="visible" :params="params" ref="columnEdit">
     <template>
+      <v-tooltip left>
+      <template v-slot:activator="{ on, attrs }">   
+      <v-btn icon @click="open()"
+          v-bind="attrs"
+          v-on="on"
+      >
+        <v-icon>mdi-magnify</v-icon>
+      </v-btn>
+      </template>
+      <span>Просмотр данных</span>
+      </v-tooltip>
+
+      <v-tooltip left>
+      <template v-slot:activator="{ on, attrs }">   
+      <v-btn icon @click="beginEdit()"
+          v-bind="attrs"
+          v-on="on"
+      >
+        <v-icon>mdi-pencil</v-icon>
+      </v-btn>
+      </template>
+      <span>Редактор колонок</span>
+      </v-tooltip>
+
+<!--
       <v-btn icon @click="update()">
         <v-icon>mdi-download</v-icon>
       </v-btn>
       <v-btn icon @click="save()">
         <v-icon>mdi-content-save</v-icon>
       </v-btn>
-      <v-btn icon @click="del()">
+-->
+      <v-tooltip left>
+      <template v-slot:activator="{ on, attrs }">   
+      <v-btn icon @click="del()"
+          v-bind="attrs"
+          v-on="on"
+      >
         <v-icon>mdi-delete</v-icon>
       </v-btn>
+      </template>
+      <span>Очистить настройки колонок</span>
+      </v-tooltip>
 
     </template>
   </Finder>
+  </v-fragment>
 </template>
 <script>
-import { mainObj, openMap, baseUrl } from "../main";
+import { mainObj, openMap, baseUrl, prodaction } from "../main";
 import Finder from "./Finder";
 export default {
   name: "Declare",
-  data: () => ({}),
+  data: () => ({
+    openEditor: false,
+    columns: [{FieldName:'aaa'}, {FieldName:'bbb'}]
+  }),
   props: {
     visible: {
       type: Boolean,
@@ -30,6 +104,68 @@ export default {
   },
   components: { Finder },
   methods: {
+    setEditor: function(b) {
+      this.openEditor = b;
+    },
+    beginEdit: async function(){
+
+      let c = openMap.get(this.id).data.curRow;
+      if (c < 0 || c > openMap.get(this.id).data.MainTab.length - 1) return;
+      let id = openMap.get(this.id).data.MainTab[c]["iddeclare"].toString();
+      let lnk = baseUrl + "React/GetColumn?id=" + id;
+
+      
+      const response = await fetch(lnk, {
+      method: "GET",
+      mode: prodaction ? "no-cors" : "cors",
+      cache: "no-cache",
+      credentials: prodaction ? "include" : "omit"
+      });
+
+      const data = await response.json();
+      if (data.Error)
+      {
+        mainObj.alert("Колонки таблиц", data.Error);
+        return;
+      }
+          
+      this.columns = [];
+      data.map(d => this.columns.push(d));
+      //alert(this.columns.length())
+      this.setEditor(true);
+
+      
+    },
+    SaveColumn: async function() {
+      let c = openMap.get(this.id).data.curRow;
+      if (c < 0 || c > openMap.get(this.id).data.MainTab.length - 1) return;
+      let id = openMap.get(this.id).data.MainTab[c]["iddeclare"].toString();
+      let lnk = baseUrl + "React/SaveColumnA"
+      let bd = new FormData();
+      bd.append("id", id);
+      bd.append("columns", JSON.stringify(this.columns)); 
+      const response = await fetch(lnk, {
+      method: "POST",
+      body: bd,
+      mode: prodaction ? "no-cors" : "cors",
+      cache: "no-cache",
+      credentials: prodaction ? "include" : "omit"
+      });
+      const data = await response.json();
+      if (data.Error)
+      {
+        mainObj.alert("Колонки таблиц", data.Error);
+      }
+      this.setEditor(false);
+    },
+    open: function () {
+      let c = openMap.get(this.id).data.curRow;
+      if (c < 0 || c > openMap.get(this.id).data.MainTab.length - 1) return;
+      let rw = openMap.get(this.id).data.MainTab[c];
+      let iddeclare = rw["iddeclare"].toString();
+      let newid = this.id + "_query_" + rw["iddeclare"].toString();
+      mainObj.openFinder(iddeclare, newid, Finder);
+    },
     del: function () {
       let c = openMap.get(this.id).data.curRow;
       if (c < 0 || c > openMap.get(this.id).data.MainTab.length - 1) return;

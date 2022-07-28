@@ -49,6 +49,7 @@ import { mainObj, openIDs, prodaction, baseUrl, openMap } from "./main";
 import Comp1 from "./components/Comp1.vue";
 import Finder from "./components/Finder.vue";
 import Declare from "./components/Declare"
+import MftQuery from "./components/MftQuery.vue"
 
 export default {
   name: "App",
@@ -131,12 +132,16 @@ export default {
       let params = p.params;
       let SQLParams = null;
       //22.07.2022 Вековая мечта, редактрор колонок
-      if (params == "75") control = Declare;
+      if (p.link1 == "Declare") 
+        control = Declare;
+      if (p.link1 == "mftquery")  
+        control = MftQuery;
       return {
         Conrol: control,
         Params: params,
         SQLParams: SQLParams
       };
+      
     }
   },
   mounted: async function() {

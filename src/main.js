@@ -6,7 +6,7 @@ import vuetify from './plugins/vuetify';
 
 
 Vue.config.productionTip = true;
-const prodaction = true;
+const prodaction = false;
 let start = "-1"
 
 
@@ -56,6 +56,9 @@ let mainObj = {
   dateformat: function (d, f) {
     if (!d) return d;
 
+    if (f=="text")
+      return d;
+
     if (d.length < 19) {
       let res = f.match(/0\.(0+)/);
 
@@ -81,6 +84,32 @@ let mainObj = {
       if (value.resize)
         value.resize()
     });
+  },
+  openFinder: function(iddeclare, newid, Finder)
+  {
+    let obj = {
+      Control: Finder,
+      Params: iddeclare,
+      SQLParams: null,
+      data: {}
+    };
+    
+    //пересоздаем заново
+    if (openMap.get(newid) != null)
+    {
+      openMap.delete(newid);
+    }
+    openMap.set(newid, obj);
+    openIDs.push(newid);
+
+    /*
+    if (openMap.get(newid) == null) {
+      openMap.set(newid, obj);
+      openIDs.push(newid);
+     }
+   */
+    mainObj.current = newid;
+    window.location.hash = newid;
   }
 };
 
