@@ -19,7 +19,7 @@
       </v-card>
     </v-dialog>
 
-    <v-navigation-drawer color="primary" dark v-model="mainObj.drawer" app width="auto" left>
+    <v-navigation-drawer color="primary" dark v-model="mainObj.drawer" app width="220" left>
       <p v-if="loading">Загрузка...</p>
       <v-treeview
         v-else

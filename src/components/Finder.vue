@@ -184,10 +184,12 @@
           <template v-slot:default>
             <thead>
               <tr>
+                <template v-for="column in OpenMapData().Fcols">
                 <th style="background-color: LightGrey"
-                  v-for="column in OpenMapData().Fcols"
+                  v-if="column.DisplayFormat!='text' && column.DisplayFormat!='hide'"
                   :key="column.FieldName"
                 ><br/>{{column.FieldCaption}}</th>
+                </template>
               </tr>
             </thead>
             <tbody v-if="(nupdate > 0)">
@@ -197,11 +199,14 @@
                 @click="handleClick(index)"
                 v-bind:style="{'background-color': (index==current)?selectedColor:'white'}"
               >
+                <template v-for="column in OpenMapData().Fcols">
                 <td
-                  v-for="column in OpenMapData().Fcols"
+                  v-if="column.DisplayFormat!='text' && column.DisplayFormat!='hide'"
                   :key="column.FieldName"
                 >{{(column.DisplayFormat == "") ? row[column.FieldName] : dateformat(row[column.FieldName], column.DisplayFormat)}}</td>
+                </template>
               </tr>
+              
             </tbody>
           </template>
         </v-simple-table>
@@ -260,6 +265,18 @@ Setting.MainTab заполняются параметры @ в запросе и
 04.06.2021
 Решена проблема фиксации заголовков гридов и полос прокрутки. 
 Заголовоки гридов покрашены в LightGrey
+
+29.07.2022
+В форму Declare добавлен редактор колонок 
+DisplayFormat == 'text' в редакторе отражается как TextArea, не показыввается в гриде
+DisplayFormat == 'hide' не показывается в гриде, но показывается в редакторе. 
+Если в редакторе !Visible (нет галочки), то не показывается ни в редакторе, ни в гриде
+
+В выпадающих списках ClassName == 'CheckList' - список для выбора будет
+построен как таблица с галочками. Отмеченные значения сохраняться как строка из ключевых
+полей выбора через запятую в поле dstField
+
+Основоное меню, не исчезает при выборе пункта , так красивее
 */
 
 import { mainObj, openMap, openIDs, prodaction, baseUrl } from "../main";

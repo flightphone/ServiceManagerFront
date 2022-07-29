@@ -59,7 +59,7 @@ let mainObj = {
 
     if (!d) return d;
 
-    if (f=="text")
+    if (f=="text" || f == "hide")
       return d;
 
     if (d.length < 19) {
