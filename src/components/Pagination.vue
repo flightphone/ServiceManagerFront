@@ -1,34 +1,32 @@
 <template>
-  <v-app-bar app  max-width="100vw">
-    <span hidden>{{$parent.action}}</span>
+  <!--<v-app-bar app  max-width="100vw">-->
+    <v-toolbar dense flat width="600px">
+    <span hidden>{{action}}</span>
     {{page() * nrows() + 1}} - {{Math.min((page() + 1) * nrows(), count())}} из {{count()}}
     <v-spacer></v-spacer>
-    <v-btn icon @click="$parent.onChangePage(0)" :disabled="page() === 0">
+    <v-btn icon @click="onChangePage(0)" :disabled="page() === 0">
       <v-icon>mdi-page-first</v-icon>
     </v-btn>
-    <v-btn icon @click="$parent.onChangePage(page()-1)" :disabled="page() === 0">
+    <v-btn icon @click="onChangePage(page()-1)" :disabled="page() === 0">
       <v-icon>mdi-chevron-left</v-icon>
     </v-btn>
     {{page() + 1}} из {{Math.max(0, Math.ceil(count() / nrows()) - 1) + 1}}
     <v-btn
       icon
-      @click="$parent.onChangePage(page()+1)"
+      @click="onChangePage(page()+1)"
       :disabled="page() >= Math.ceil(count() / nrows()) - 1"
     >
       <v-icon>mdi-chevron-right</v-icon>
     </v-btn>
     <v-btn
       icon
-      @click="$parent.onChangePage(Math.max(0, Math.ceil(count() / nrows()) - 1))"
+      @click="onChangePage(Math.max(0, Math.ceil(count() / nrows()) - 1))"
       :disabled="page() >= Math.ceil(count() / nrows()) - 1"
     >
       <v-icon>mdi-page-last</v-icon>
     </v-btn>
-
-    <v-btn icon @click="$parent.stateDrawer = false">
-      <v-icon>mdi-window-close</v-icon>
-    </v-btn>
-  </v-app-bar>
+    </v-toolbar>
+  <!--</v-app-bar>-->
 </template>
 <script>
 
@@ -42,9 +40,15 @@ export default {
   props: {
     //id: String,
     //editid: Number
-    findData: Object
+    findData: Object,
+    par: Function,
+    action:Object
   },
   methods: {
+    onChangePage: function(p)
+    {
+      this.par(p);
+    },
     OpenMapData: function() {
       return this.findData;
     },

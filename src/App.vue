@@ -11,7 +11,7 @@
           <v-btn color="green darken-1" text @click="handleClose()">ОК</v-btn>
           <v-btn
             v-if="mainObj.alertConfirm"
-            color="green darken-1"
+            color="red darken-1"
             text
             @click="mainObj.openAlert = false"
           >Отмена</v-btn>

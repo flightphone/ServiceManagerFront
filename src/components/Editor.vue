@@ -98,7 +98,8 @@
             </tbody>
           </template>
         </v-simple-table>
-        <template v-if="!readonly">
+      <template v-if="!readonly">
+      
       <template v-for="(column, index) in findData.ReferEdit.Editors">
         <template v-if="column.joinRow != null && (column.joinRow.classname == 'CheckList' || column.joinRow.classname == 'List')">
             <span style="margin-left:15px"

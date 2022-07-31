@@ -29,7 +29,7 @@
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn color="green darken-1" text @click="SaveColumn()">ОК</v-btn>
-          <v-btn color="green darken-1" text @click="setEditor(false)">Отмена</v-btn>
+          <v-btn color="red darken-1" text @click="setEditor(false)">Отмена</v-btn>
         </v-card-actions>
       </v-card>
 

@@ -34,7 +34,7 @@
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn color="green darken-1" text @click="updateTab()">ОК</v-btn>
-          <v-btn color="green darken-1" text @click="setFilter(false )">Отмена</v-btn>
+          <v-btn color="red darken-1" text @click="setFilter(false )">Отмена</v-btn>
         </v-card-actions>
       </v-card>
 
@@ -44,10 +44,44 @@
     <div v-bind:hidden="mode!='grid'" style="height:100vh;maxheight:100vh;overflow:auto">
       <v-app-bar app  v-if="!stateDrawer" max-width="100vw" height="65">
         <v-app-bar-nav-icon v-if="(editid == null)" @click="mainObj.drawer = !mainObj.drawer"></v-app-bar-nav-icon>
+        <v-btn icon key="0" @click="back();">
+            <v-icon title="Назад">mdi-arrow-left</v-icon>
+        </v-btn>
         <v-toolbar-title>{{Descr}}</v-toolbar-title>
         <v-spacer></v-spacer>
         <v-spacer></v-spacer>
         <v-spacer></v-spacer>
+
+        <template v-if="(editid==null) && !load">
+          <v-btn icon key="6" @click="add();" v-if="(OpenMapData().DelProc)">
+             <v-icon title="Добавить">mdi-plus</v-icon>
+          </v-btn>
+                <v-btn icon key="7" @click="edit()" v-if="(OpenMapData().EditProc)">
+                    <v-icon title="Редактировать">mdi-pencil</v-icon>
+                </v-btn>
+
+                <v-btn icon key="8" @click="confirmDelete()" v-if="(OpenMapData().DelProc)">
+                    <v-icon title="Удалить">mdi-delete</v-icon>
+                </v-btn>
+        </template>
+                <v-btn icon key="1" @click="setFilter(true)" v-if="!load">
+                    <v-icon title="Фильтровка и сортировка">mdi-filter-menu</v-icon>
+                </v-btn>
+        <template v-if="(editid==null) && !load">
+                <v-btn icon key="3" @click="csv()">
+                    <v-icon title="Экспорт в CSV">mdi-cloud-download</v-icon>
+                </v-btn>
+                <v-btn icon key="4" @click="openDetail()" v-if="OpenMapData().KeyValue">
+                    <v-icon title="Детали">mdi-details</v-icon>
+                </v-btn>
+              <v-btn icon 
+                key="5"
+                @click="editSetting()"
+                v-if="OpenMapData().IdDeclareSet && !load">
+                  <v-icon title="Параметры">mdi-cog</v-icon>
+              </v-btn>                
+        </template>        
+
         <v-text-field v-if="!load" 
             label="Поиск"
             dense
@@ -70,112 +104,11 @@
           </v-btn>
         </template>
         <slot></slot>
-        <v-menu left>
-          <template v-slot:activator="{ on, attrs }">
-            <v-btn icon v-bind="attrs" v-on="on">
-              <v-icon>mdi-dots-vertical</v-icon>
-            </v-btn>
-          </template>
-          <v-list>
-            <v-list-item-group>
-              <template v-if="(editid==null) && !load">
-                <v-list-item key="6" @click="add();" v-if="(OpenMapData().DelProc)">
-                  <v-list-item-icon>
-                    <v-icon>mdi-plus</v-icon>
-                  </v-list-item-icon>
-                  <v-list-item-content>
-                    <v-list-item-title>Добавить</v-list-item-title>
-                  </v-list-item-content>
-                </v-list-item>
 
-                <v-list-item key="7" @click="edit()">
-                  <v-list-item-icon>
-                    <v-icon v-if="(OpenMapData().EditProc)">mdi-pencil</v-icon>
-                    <v-icon v-else>mdi-magnify</v-icon>
-                  </v-list-item-icon>
-                  <v-list-item-content>
-                    <v-list-item-title v-if="(OpenMapData().EditProc)">Редактировать</v-list-item-title>
-                    <v-list-item-title v-else>Просмотр</v-list-item-title>
-                  </v-list-item-content>
-                </v-list-item>
-
-                <v-list-item key="8" @click="confirmDelete()" v-if="(OpenMapData().DelProc)">
-                  <v-list-item-icon>
-                    <v-icon>mdi-delete</v-icon>
-                  </v-list-item-icon>
-                  <v-list-item-content>
-                    <v-list-item-title>Удалить</v-list-item-title>
-                  </v-list-item-content>
-                </v-list-item>
-              </template>
-              <template v-if="!load">
-                <v-list-item key="1" @click="setFilter(true)">
-                  <v-list-item-icon>
-                    <v-icon>mdi-filter-menu</v-icon>
-                  </v-list-item-icon>
-                  <v-list-item-content>
-                    <v-list-item-title>Фильтровка и сортировка</v-list-item-title>
-                  </v-list-item-content>
-                </v-list-item>
-
-                <v-list-item key="2" @click="stateDrawer=true">
-                  <v-list-item-icon>
-                    <v-icon>mdi-code-tags</v-icon>
-                  </v-list-item-icon>
-                  <v-list-item-content>
-                    <v-list-item-title>Страницы</v-list-item-title>
-                  </v-list-item-content>
-                </v-list-item>
-
-                <v-list-item key="0" @click="updateTab()">
-                  <v-list-item-icon>
-                    <v-icon>mdi-refresh</v-icon>
-                  </v-list-item-icon>
-                  <v-list-item-content>
-                    <v-list-item-title>Обновить</v-list-item-title>
-                  </v-list-item-content>
-                </v-list-item>
-              </template>
-
-              <template v-if="(editid==null) && !load">
-                <v-list-item key="3" @click="csv()">
-                  <v-list-item-icon>
-                    <v-icon>mdi-cloud-download</v-icon>
-                  </v-list-item-icon>
-                  <v-list-item-content>
-                    <v-list-item-title>Экспорт в CSV</v-list-item-title>
-                  </v-list-item-content>
-                </v-list-item>
-                
-                <v-list-item key="4" @click="openDetail()" v-if="OpenMapData().KeyValue">
-                  <v-list-item-icon>
-                    <v-icon>mdi-details</v-icon>
-                  </v-list-item-icon>
-                  <v-list-item-content>
-                    <v-list-item-title>Детали</v-list-item-title>
-                  </v-list-item-content>
-                </v-list-item>
-              </template>
-
-              <v-list-item
-                key="5"
-                @click="editSetting()"
-                v-if="OpenMapData().IdDeclareSet && !load"
-              >
-                <v-list-item-icon>
-                  <v-icon>mdi-cog</v-icon>
-                </v-list-item-icon>
-                <v-list-item-content>
-                  <v-list-item-title>Параметры</v-list-item-title>
-                </v-list-item-content>
-              </v-list-item>
-            </v-list-item-group>
-          </v-list>
-        </v-menu>
       </v-app-bar>
-
+      <!--
       <Pagination :findData="OpenMapData()" v-if="stateDrawer" />
-
+      -->
       <v-main>
         
 		<template v-if="!load">    
@@ -208,6 +141,15 @@
               </tr>
               
             </tbody>
+            <tfoot 
+            v-if="OpenMapData().TotalTab && OpenMapData().TotalTab[0] && OpenMapData().nrows < OpenMapData().TotalTab[0].n_total"
+            >
+            <tr>
+            <td colspan="100">
+              <Pagination :findData="OpenMapData()" :par="onChangePage" :action="action"/>
+            </td>
+            </tr>
+            </tfoot>
           </template>
         </v-simple-table>
         </slot>
@@ -334,6 +276,10 @@ let Finder = {
     }
   },
   methods: {
+    back: function()
+    {
+      history.back();
+    },
     //24.05.2022
     resize: function()
         {
@@ -741,6 +687,8 @@ let Finder = {
     },
     //checklist 27.07.2022
     initEdit: function(data){
+      if (!data.ReferEdit)
+        return;
       data.ReferEdit.Editors.map(ed => {
         if (ed.DisplayFormat == "password")
           ed.show1 = false;
@@ -755,6 +703,8 @@ let Finder = {
     },
 
     postEdit: function(data){
+      if (!data.ReferEdit)
+        return;
       data.ReferEdit.Editors.map(ed => {
         if (ed.joinRow!=null && ed.joinRow.classname == "CheckList")
         {
