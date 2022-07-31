@@ -741,6 +741,8 @@ let Finder = {
     },
     //checklist 27.07.2022
     initEdit: function(data){
+      if (!data.ReferEdit)
+        return;
       data.ReferEdit.Editors.map(ed => {
         if (ed.DisplayFormat == "password")
           ed.show1 = false;

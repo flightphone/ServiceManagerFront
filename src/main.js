@@ -120,7 +120,7 @@ let mainObj = {
   }
 };
 
-const baseUrl = (prodaction) ? "" : "http://localhost:5000/";
+const baseUrl = (prodaction) ? "" : " http://192.168.147.33:5000/";
 
 
 
