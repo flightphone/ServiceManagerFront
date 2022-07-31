@@ -32,6 +32,18 @@
               <template v-else>
                 <tr v-for="(column, index) in findData.ReferEdit.Editors" :key="index" style="background-color:white">
                   <td style="border-bottom: none;">
+                  <v-text-field
+                      v-if="column.DisplayFormat=='password' && (nupdate > 0)"
+                      :label="column.FieldCaption"
+                      :key="column.FieldName + uid"
+                      v-model="findData.WorkRow[column.FieldName]"
+                      :append-icon="column.show1 ? 'mdi-eye' : 'mdi-eye-off'"
+                      :type="column.show1 ? 'text' : 'password'"
+                      @click:append="column.show1 = !column.show1; nupdate++;"
+                    
+                    ></v-text-field>
+                    <template v-else>
+                  
                   <!--28.07.2022-->
                    <v-textarea v-if="column.DisplayFormat=='text'" 
                      :label="column.FieldCaption"
@@ -44,11 +56,12 @@
                       :label="column.FieldCaption"
                       :key="column.FieldName + uid"
                       v-model="findData.WorkRow[column.FieldName]"
+                      :disabled = "column.DisplayFormat=='disabled'"
                     ></v-text-field>
                     <template v-else>
                      <!--выводим checklist 27.07.2022--> 
                       <v-text-field
-                      v-if="column.joinRow.classname == 'CheckList'"
+                      v-if="(column.joinRow.classname == 'CheckList' || column.joinRow.classname == 'List')"
                       :label="column.FieldCaption"
                       :key="column.FieldName + uid"
                       v-model="findData.WorkRow[column.FieldName]"
@@ -78,6 +91,7 @@
 
                     </template>
                     </template>
+                    </template>
                   </td>
                 </tr>
               </template>
@@ -86,7 +100,7 @@
         </v-simple-table>
         <template v-if="!readonly">
       <template v-for="(column, index) in findData.ReferEdit.Editors">
-        <template v-if="column.joinRow != null && column.joinRow.classname == 'CheckList'">
+        <template v-if="column.joinRow != null && (column.joinRow.classname == 'CheckList' || column.joinRow.classname == 'List')">
             <span style="margin-left:15px"
             :key="index"
             >{{column.joinRow.FindConrol.Descr}}:</span>
@@ -95,12 +109,29 @@
             :key="index"
             >
             <template v-slot:default>
+              <thead>
+              <tr dence>
+                <th style="background-color: LightGrey"
+                v-if="column.joinRow.classname == 'CheckList'"                
+                >
+                   Доступ 
+                </th>
+                <th style="background-color: LightGrey" v-for="col in column.joinRow.FindConrol.Fcols"
+                  :key="col.FieldName"
+                >{{col.FieldCaption}}</th>
+                
+              </tr>
+            </thead>
               <tbody v-if="(nupdate > 0) && uid !=''">
-              <tr dense
-              style="border-bottom: none;"
-              v-for="(row, index) in column.joinRow.FindConrol.MainTab" :key="index">
               
-              <td dense>
+              <template v-for="(row, index) in column.joinRow.FindConrol.MainTab">
+              <tr dense
+              v-if="column.joinRow.classname == 'CheckList' || row.check"
+              style="border-bottom: none;"
+              :key="index"
+              >
+              
+              <td dense v-if="column.joinRow.classname == 'CheckList'">
                 <v-checkbox
                   v-model="row.check"
                 >
@@ -114,6 +145,7 @@
               
               
               </tr>
+              </template>
               </tbody>
             </template>
             </v-simple-table>
@@ -129,7 +161,7 @@
       <template v-for="(column, index) in findData.ReferEdit.Editors">
         <template v-if="column.joinRow != null">
           <Finder
-            v-if="column.joinRow.classname == 'Bureau.Finder'"
+            v-if="column.joinRow.classname == 'Bureau.Finder' || column.joinRow.classname == 'CheckList' || column.joinRow.classname == 'List'"
             :visible="mode=='finder_' + index.toString()"
             :params="column.joinRow.IdDeclare"
             :editid="index"

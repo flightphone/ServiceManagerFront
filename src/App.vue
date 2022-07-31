@@ -102,7 +102,7 @@ export default {
           }
         }
         this.open(item);
-        //mainObj.drawer = false;
+        mainObj.drawer = false; //прячем меню 31.07.2022
       }
     },
     handleClose: function() {

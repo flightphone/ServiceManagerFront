@@ -101,7 +101,7 @@ export default {
     Array.prototype.push.apply(this.items, data.items);
     Array.prototype.push.apply(this.items2, data.items2);
     this.loading = false;
-    mainObj.drawer = true; //так красивее, меню слева и не прыгает каждый раз
+    //mainObj.drawer = true; //так красивее, меню слева и не прыгает каждый раз, отменили по запросу 31.07.2022
           
     
   }

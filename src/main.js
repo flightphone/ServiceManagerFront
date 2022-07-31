@@ -6,7 +6,7 @@ import vuetify from './plugins/vuetify';
 
 
 Vue.config.productionTip = true;
-const prodaction = true;
+const prodaction = false;
 let start = "-1"
 
 
@@ -54,12 +54,9 @@ let mainObj = {
   },
   selectedColor: "LightGreen",
   dateformat: function (d, f) {
-    if (f == 'password')
-      return '*****';
-
     if (!d) return d;
 
-    if (f=="text" || f == "hide")
+    if (f=="text" || f == "hide" || f == 'password' || f== 'disabled')
       return d;
 
     if (d.length < 19) {
@@ -86,6 +83,13 @@ let mainObj = {
     openMap.forEach((value) => {
       if (value.resize)
         value.resize()
+    });
+  },
+  extupdate:function (tablename, id) {
+    //Global update 31/07/2022
+    openMap.forEach((value) => {
+      if (value.extupdate)
+        value.extupdate(tablename, id)
     });
   },
   openFinder: function(iddeclare, newid, Finder)

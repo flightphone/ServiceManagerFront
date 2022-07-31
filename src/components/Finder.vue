@@ -186,7 +186,7 @@
               <tr>
                 <template v-for="column in OpenMapData().Fcols">
                 <th style="background-color: LightGrey"
-                  v-if="column.DisplayFormat!='text' && column.DisplayFormat!='hide'"
+                  v-if="column.DisplayFormat!='text' && column.DisplayFormat!='hide' && column.DisplayFormat!='password'"
                   :key="column.FieldName"
                 ><br/>{{column.FieldCaption}}</th>
                 </template>
@@ -201,7 +201,7 @@
               >
                 <template v-for="column in OpenMapData().Fcols">
                 <td
-                  v-if="column.DisplayFormat!='text' && column.DisplayFormat!='hide'"
+                  v-if="column.DisplayFormat!='text' && column.DisplayFormat!='hide' && column.DisplayFormat!='password'"
                   :key="column.FieldName"
                 >{{(column.DisplayFormat == "") ? row[column.FieldName] : dateformat(row[column.FieldName], column.DisplayFormat)}}</td>
                 </template>
@@ -339,6 +339,27 @@ let Finder = {
         {
             this.gridHeight = mainObj.gridHeight()
         },
+    extupdate: function(tablename, id)
+    {
+      //callback функция для обновления из вне 31/07/2022
+      if (this.id != null && id == this.id)
+        return;
+
+      let md = this.OpenMapData();
+      
+      //обновляем editors
+      if (md.ReferEdit != null)
+      md.ReferEdit.Editors.map(ed => {
+        if (ed.joinRow!=null && ed.joinRow.FindConrol!=null && ed.joinRow.FindConrol.extupdate!=null)
+          ed.joinRow.FindConrol.extupdate(tablename, id);
+      })
+
+      
+      if (md.TableName!=tablename)
+        return;
+      //alert(tablename);  
+      this.updateTab()  
+    },    
     sortChange: function(event, index) {
       let rang = 0;
       let columns = this.OpenMapData().Fcols;
@@ -470,18 +491,20 @@ let Finder = {
       let newid = this.id + "_" + rw[mid.KeyF];
       
       //пересоздаем заново
+      /*
       if (openMap.get(newid) != null)
       {
         openMap.delete(newid);
       }
       openMap.set(newid, obj);
       openIDs.push(newid);
-      /*
+      */
+      
       if (openMap.get(newid) == null) {
         openMap.set(newid, obj);
         openIDs.push(newid);
       }
-      */
+      
       mainObj.current = newid;
       window.location.hash = newid;
     },
@@ -578,6 +601,9 @@ let Finder = {
       //Сигнал в слоты 22/05/2022
       if (openMap.get(this.id).updateTab != null)
         openMap.get(this.id).updateTab()
+
+      //Обновляем все гриды в приложении 31.07.2022
+      mainObj.extupdate(mid.TableName, this.id);  	    
     },
     onChangePage: function(p) {
       this.action = this.action + 1;
@@ -695,7 +721,9 @@ let Finder = {
       this.nupdate = this.nupdate + 1;
       //Сигнал в слоты 22/05/2022
       if (openMap.get(this.id).updateTab != null)
-        openMap.get(this.id).updateTab()	  
+        openMap.get(this.id).updateTab()
+      //Обновляем все гриды в приложении 31.07.2022
+      mainObj.extupdate(data.TableName, this.id);  	  
     },
     closeEditor: function() {
       this.mode = "grid";
@@ -714,7 +742,9 @@ let Finder = {
     //checklist 27.07.2022
     initEdit: function(data){
       data.ReferEdit.Editors.map(ed => {
-        if (ed.joinRow!=null && ed.joinRow.classname == "CheckList")
+        if (ed.DisplayFormat == "password")
+          ed.show1 = false;
+        if (ed.joinRow!=null && (ed.joinRow.classname == "CheckList" || ed.joinRow.classname == "List"))
         {
           let src = ed.joinRow.FindConrol.KeyF;
           let dst = ed.joinRow.fields[src];
@@ -794,14 +824,6 @@ let Finder = {
       let md = OpenMapData();
       md.curRow = 0;
       this.Descr = md.Descr + " (выбор)";
-      /*
-      md.Fcols.map((column, index)=>{
-         if (column.FieldName == md.DispField) 
-         {
-            this.dispIndex = index
-         }
-      });
-      */
       //размер окна
       md.resize = this.resize;
       //размеры окон 24/05/2022
@@ -809,7 +831,8 @@ let Finder = {
       if (md.resize)
           md.resize()
       }, true);
-
+      //global обновление 31/07/2022
+      md.extupdate = this.extupdate;
       setLoad(false);
       return;
     }
@@ -819,6 +842,9 @@ let Finder = {
     mid.handleClick = this.handleClick;
     //изменение размеров окна
     mid.resize = this.resize;
+    
+    //global обновление 31/07/2022
+    mid.extupdate = this.extupdate;
 
     const url = baseUrl + "React/FinderStart";
     let bd = new FormData();
@@ -851,18 +877,6 @@ let Finder = {
         data.WorkRow[column] = "";
       });
 
-      //19/05/2022
-      /*
-      data.Fcols.map((column, index)=>{
-         if (column.FieldName == data.DispField) 
-         {
-            this.dispIndex = index
-         }
-      });
-      */
-
-      
-      
       mid.data = data;
       this.Descr = data.Descr;
       if (mid.title) this.Descr = this.Descr + " (" + mid.title + ")";
