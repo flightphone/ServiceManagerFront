@@ -51,7 +51,7 @@
         <v-spacer></v-spacer>
         <v-spacer></v-spacer>
         <v-spacer></v-spacer>
-
+        
         <template v-if="(editid==null) && !load">
           <v-btn icon key="6" @click="add();" v-if="(OpenMapData().DelProc)">
              <v-icon title="Добавить">mdi-plus</v-icon>
@@ -81,7 +81,6 @@
                   <v-icon title="Параметры">mdi-cog</v-icon>
               </v-btn>                
         </template>        
-
         <v-text-field v-if="!load" 
             label="Поиск"
             dense
@@ -93,7 +92,7 @@
             v-model="OpenMapData().SearchCols[0].FindString"
             @input="updateTab()"
           ></v-text-field>
-
+        
         
         <template v-if="(editid != null)">
           <v-btn icon @click="selectFinder(editid)">
@@ -104,6 +103,7 @@
           </v-btn>
         </template>
         <slot></slot>
+        
 
       </v-app-bar>
       <!--
