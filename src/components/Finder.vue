@@ -743,6 +743,9 @@ let Finder = {
     initEdit: function(data){
       if (!data.ReferEdit)
         return;
+      if (data.updatefilelist)  
+        data.updatefilelist()
+
       data.ReferEdit.Editors.map(ed => {
         if (ed.DisplayFormat == "password")
           ed.show1 = false;
