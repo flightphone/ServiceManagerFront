@@ -6,7 +6,9 @@ import vuetify from './plugins/vuetify';
 
 
 Vue.config.productionTip = true;
-const prodaction = false;
+const prodaction = true;
+const baseUrl = (prodaction) ? "" : " http://localhost:5000/";
+
 let start = "-1"
 
 
@@ -117,10 +119,22 @@ let mainObj = {
    */
     mainObj.current = newid;
     window.location.hash = newid;
+  },
+  fetch: async function(url, bd){
+    url = baseUrl + url;
+    const response = await fetch(url, {
+      method: "POST",
+      mode: prodaction ? "no-cors" : "cors",
+      cache: "no-cache",
+      credentials: prodaction ? "include" : "omit",
+      body: bd
+    });
+    const data = await response.json();
+    return data;
   }
 };
 
-const baseUrl = (prodaction) ? "" : "http://192.168.147.33:5000/";
+
 
 
 
@@ -175,5 +189,3 @@ new Vue({
 }).$mount('#app');
 
 export { openMap, mainObj, openIDs, prodaction, baseUrl }
-
-

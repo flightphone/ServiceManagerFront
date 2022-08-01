@@ -3,13 +3,20 @@
     <div v-bind:hidden="mode!='edit'" style="height:100vh;maxheight:100vh;overflow:auto">
       <v-app-bar app  max-width="100vw">
         <v-app-bar-nav-icon v-if="action!='setting'" @click="mainObj.drawer = !mainObj.drawer"></v-app-bar-nav-icon>
+        
+        
+        
         <v-toolbar-title>{{Descr()}}</v-toolbar-title>
         <v-spacer></v-spacer>
+        <v-btn icon @click="addfile()" v-if="!readonly && findData.AddKeys">
+          <v-icon title="Добавить файл">mdi-paperclip</v-icon>
+        </v-btn>
+
         <v-btn icon @click="save()" v-if="!readonly">
-          <v-icon>mdi-check</v-icon>
+          <v-icon title="Сохранить">mdi-check</v-icon>
         </v-btn>
         <v-btn icon @click="closeEditor()">
-          <v-icon>mdi-window-close</v-icon>
+          <v-icon title="Отменить">mdi-window-close</v-icon>
         </v-btn>
       </v-app-bar>
       <v-main>
@@ -98,8 +105,15 @@
             </tbody>
           </template>
         </v-simple-table>
-      <template v-if="!readonly">
-      
+        <!--файлы 01.08.2022 -->
+        <FileList 
+        :findData = "findData"
+        v-if="!readonly && findData.AddKeys">
+
+        </FileList>
+
+
+        <template v-if="!readonly">
       <template v-for="(column, index) in findData.ReferEdit.Editors">
         <template v-if="column.joinRow != null && (column.joinRow.classname == 'CheckList' || column.joinRow.classname == 'List')">
             <span style="margin-left:15px"
@@ -179,62 +193,72 @@
 
 <script>
 import { mainObj } from "../main";
+import FileList from "./FileList.vue"
+
 export default {
-  name: "Editor",
-  data: () => ({
-    mode: "edit",
-    mainObj: mainObj,
-    nupdate: 1
-  }),
-  props: {
-    save: Function,
-    closeEditor: Function,
-    action: String,
-    findData: Object,
-    uid: String,
-    readonly: Boolean
-  },
-  beforeCreate: function() {
-    this.$options.components.Finder = require("./Finder.vue").default;
-  },
-  methods: {
-    Descr: function() {
-      if (this.action == "add") return "Новая запись (" + this.findData.Descr + ")";
-      if (this.action == "edit") {
-        if (this.readonly) return "Просмотр (" + this.findData.Descr + ")";
-        else return "Редактирование (" + this.findData.Descr + ")";
-      }
-      if (this.action == "setting") return "Параметры (" + this.findData.Descr + ")";
+    name: "Editor",
+    data: () => ({
+        mode: "edit",
+        mainObj: mainObj,
+        nupdate: 1
+    }),
+    props: {
+        save: Function,
+        closeEditor: Function,
+        action: String,
+        findData: Object,
+        uid: String,
+        readonly: Boolean
     },
-    open: function(index) {
-      this.mode = "finder_" + index.toString();
+    beforeCreate: function () {
+        this.$options.components.Finder = require("./Finder.vue").default;
     },
-    selectFinder: function(editid) {
-      let column = this.findData.ReferEdit.Editors[editid];
-      let c = this.findData.ReferEdit.Editors[editid].joinRow.FindConrol.curRow;
-      let row = column.joinRow.FindConrol.MainTab[c];
-      for (let s in column.joinRow.fields) {
-        this.findData.WorkRow[column.joinRow.fields[s]] = row[s];
-      }
-      this.nupdate = this.nupdate + 1;
-      this.mode = "edit";
-    },
-    sortChange: function(event, column) {
-      column.joinRow.FindConrol.MainTab.map(row => {
-        if (row[column.joinRow.keyField] == event) {
-          for (let s in column.joinRow.fields) {
-            this.findData.WorkRow[column.joinRow.fields[s]] = row[s];
-          }
+    methods: {
+        addfile: function () {
+            this.findData.newfile()
+        },
+        Descr: function () {
+            if (this.action == "add")
+                return "Новая запись (" + this.findData.Descr + ")";
+            if (this.action == "edit") {
+                if (this.readonly)
+                    return "Просмотр (" + this.findData.Descr + ")";
+                else
+                    return "Редактирование (" + this.findData.Descr + ")";
+            }
+            if (this.action == "setting")
+                return "Параметры (" + this.findData.Descr + ")";
+        },
+        open: function (index) {
+            this.mode = "finder_" + index.toString();
+        },
+        selectFinder: function (editid) {
+            let column = this.findData.ReferEdit.Editors[editid];
+            let c = this.findData.ReferEdit.Editors[editid].joinRow.FindConrol.curRow;
+            let row = column.joinRow.FindConrol.MainTab[c];
+            for (let s in column.joinRow.fields) {
+                this.findData.WorkRow[column.joinRow.fields[s]] = row[s];
+            }
+            this.nupdate = this.nupdate + 1;
+            this.mode = "edit";
+        },
+        sortChange: function (event, column) {
+            column.joinRow.FindConrol.MainTab.map(row => {
+                if (row[column.joinRow.keyField] == event) {
+                    for (let s in column.joinRow.fields) {
+                        this.findData.WorkRow[column.joinRow.fields[s]] = row[s];
+                    }
+                }
+            });
+            this.nupdate = this.nupdate + 1;
+        },
+        clearFinder: function () {
+            this.mode = "edit";
+        },
+        textChange: function (event, index) {
+            this.findData.WorkRow[index] = event;
         }
-      });
-      this.nupdate = this.nupdate + 1;
     },
-    clearFinder: function() {
-      this.mode = "edit";
-    },
-    textChange: function(event, index) {
-      this.findData.WorkRow[index] = event;
-    }
-  }
+    components: { FileList }
 };
 </script>
