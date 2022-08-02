@@ -37,6 +37,25 @@
 
   <Finder :id="id" :visible="visible" :params="params" ref="columnEdit">
     <template>
+
+      <v-btn icon title="Просмотр данных"  @click="open()">
+        <v-icon>mdi-database-search</v-icon>
+      </v-btn>
+      <v-btn icon title="Редактор колонок" @click="beginEdit()">
+        <v-icon>mdi-cog</v-icon>
+      </v-btn>
+
+      <v-btn icon title="Очистить настройки колонок" @click="del()">
+        <v-icon>mdi-autorenew</v-icon>
+      </v-btn>
+
+      <v-divider
+      class="mx-4"
+      vertical
+      ></v-divider>
+      
+      
+<!--      
       <v-tooltip left>
       <template v-slot:activator="{ on, attrs }">   
       <v-btn icon @click="open()"
@@ -61,14 +80,15 @@
       <span>Редактор колонок</span>
       </v-tooltip>
 
-<!--
+
       <v-btn icon @click="update()">
         <v-icon>mdi-download</v-icon>
       </v-btn>
       <v-btn icon @click="save()">
         <v-icon>mdi-content-save</v-icon>
       </v-btn>
--->
+
+    
       <v-tooltip left>
       <template v-slot:activator="{ on, attrs }">   
       <v-btn icon @click="del()"
@@ -80,7 +100,7 @@
       </template>
       <span>Очистить настройки колонок</span>
       </v-tooltip>
-
+    -->  
     </template>
   </Finder>
   </v-fragment>

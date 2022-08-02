@@ -1,30 +1,41 @@
 <template>
   <!--<v-app-bar app  max-width="100vw">-->
-    <v-toolbar dense flat width="600px">
+    
+    <v-toolbar dense flat width="100vw" >
     <span hidden>{{action}}</span>
-    {{page() * nrows() + 1}} - {{Math.min((page() + 1) * nrows(), count())}} из {{count()}}
     <v-spacer></v-spacer>
-    <v-btn icon @click="onChangePage(0)" :disabled="page() === 0">
+    <v-btn class="mx-2" small @click="onChangePage(0)" :disabled="page() === 0">
       <v-icon>mdi-page-first</v-icon>
     </v-btn>
-    <v-btn icon @click="onChangePage(page()-1)" :disabled="page() === 0">
+    <v-btn  class="mx-2"  small  @click="onChangePage(page()-1)" :disabled="page() === 0">
       <v-icon>mdi-chevron-left</v-icon>
     </v-btn>
+    <span  class="mx-2" small>
+    <!--
+    Страница {{page() + 1}} из {{Math.max(0, Math.ceil(count() / nrows()) - 1) + 1}},
+    Просмотр {{page() * nrows() + 1}} - {{Math.min((page() + 1) * nrows(), count())}} из {{count()}} записей
+    -->  
     {{page() + 1}} из {{Math.max(0, Math.ceil(count() / nrows()) - 1) + 1}}
+    </span>
     <v-btn
-      icon
+       class="mx-2" small 
       @click="onChangePage(page()+1)"
       :disabled="page() >= Math.ceil(count() / nrows()) - 1"
     >
       <v-icon>mdi-chevron-right</v-icon>
     </v-btn>
     <v-btn
-      icon
+       class="mx-2" small 
       @click="onChangePage(Math.max(0, Math.ceil(count() / nrows()) - 1))"
       :disabled="page() >= Math.ceil(count() / nrows()) - 1"
     >
       <v-icon>mdi-page-last</v-icon>
     </v-btn>
+    <v-spacer></v-spacer>
+    <!--
+    {{page() * nrows() + 1}} - {{Math.min((page() + 1) * nrows(), count())}} из {{count()}}
+    -->
+    
     </v-toolbar>
   <!--</v-app-bar>-->
 </template>

@@ -51,6 +51,10 @@
         <v-spacer></v-spacer>
         <v-spacer></v-spacer>
         <v-spacer></v-spacer>
+        <v-divider
+        class="mx-4"
+        vertical
+        ></v-divider>        
         
         <template v-if="(editid==null) && !load">
           <v-btn icon key="6" @click="add();" v-if="(OpenMapData().DelProc)">
@@ -80,7 +84,12 @@
                 v-if="OpenMapData().IdDeclareSet && !load">
                   <v-icon title="Параметры">mdi-cog</v-icon>
               </v-btn>                
-        </template>        
+        </template>  
+        <v-divider
+        class="mx-4"
+        vertical
+        ></v-divider>
+        <slot></slot>      
         <v-text-field v-if="!load" 
             label="Поиск"
             dense
@@ -95,14 +104,18 @@
         
         
         <template v-if="(editid != null)">
-          <v-btn icon @click="selectFinder(editid)">
+        <v-divider
+        class="mx-4"
+        vertical
+        ></v-divider> 
+          <v-btn icon title="Выбрать"  @click="selectFinder(editid)">
             <v-icon>mdi-check</v-icon>
           </v-btn>
-          <v-btn icon @click="clearFinder()">
+          <v-btn icon title="Отмена" @click="clearFinder()">
             <v-icon>mdi-window-close</v-icon>
           </v-btn>
         </template>
-        <slot></slot>
+        
         
 
       </v-app-bar>
