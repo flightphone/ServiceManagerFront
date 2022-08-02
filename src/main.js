@@ -6,7 +6,7 @@ import vuetify from './plugins/vuetify';
 
 
 Vue.config.productionTip = true;
-const prodaction = false;
+const prodaction = true;
 const baseUrl = (prodaction) ? "" : " http://localhost:5000/";
 
 let start = "-1"
@@ -55,6 +55,7 @@ let mainObj = {
 
   },
   selectedColor: "LightGreen",
+  testApi:true,
   dateformat: function (d, f) {
     if (!d) return d;
 

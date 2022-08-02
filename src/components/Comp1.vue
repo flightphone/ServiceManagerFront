@@ -7,6 +7,8 @@
         <v-app-bar-nav-icon @click="mainObj.drawer = !mainObj.drawer"></v-app-bar-nav-icon>
         <v-toolbar-title>Рабочее место оператора НСИ</v-toolbar-title>
         <v-spacer></v-spacer>
+        <v-icon title = "API НСИ доступно" color="green darken-1" v-if="mainObj.testApi">mdi-wifi</v-icon>
+        <v-icon title = "API НСИ недоступно" color="red darken-1" v-if="!mainObj.testApi">mdi-wifi-off</v-icon>
       </v-app-bar>
       <v-main>
         <div v-bind:style="{height:gridHeight+'px'}">
@@ -48,7 +50,7 @@
     </div>
 </template>
 <script>
-import {mainObj, openIDs, prodaction, baseUrl, openMap} from "../main"
+import {mainObj, openIDs,  openMap} from "../main"
 import Finder from "./Finder.vue";
 export default {
     name: "Comp1",
@@ -90,16 +92,12 @@ export default {
   mounted: async function() {
     let mid = openMap.get("-1");
     mid.resize = this.resize;
-    let url = baseUrl + "React/Banner";
-    const response = await fetch(url, {
-      method: "GET", // *GET, POST, PUT, DELETE, etc.
-      mode: prodaction ? "no-cors" : "cors", // no-cors, *cors, same-origin
-      cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
-      credentials: prodaction ? "include" : "omit" // include, *same-origin, omit
-    });
-    let data = await response.json(); 
+    let url ="React/Banner";
+    let data = await mainObj.fetch(url, null);
+    
     Array.prototype.push.apply(this.items, data.items);
     Array.prototype.push.apply(this.items2, data.items2);
+    mainObj.testApi = (data.Error == "OK");
     this.loading = false;
     //mainObj.drawer = true; //так красивее, меню слева и не прыгает каждый раз, отменили по запросу 31.07.2022
           

@@ -115,6 +115,10 @@
             <v-icon>mdi-window-close</v-icon>
           </v-btn>
         </template>
+        <template v-else>
+          <v-icon title = "API НСИ доступно" color="green darken-1" v-if="mainObj.testApi">mdi-wifi</v-icon>
+          <v-icon title = "API НСИ недоступно" color="red darken-1" v-if="!mainObj.testApi">mdi-wifi-off</v-icon>
+        </template>
         
         
 
