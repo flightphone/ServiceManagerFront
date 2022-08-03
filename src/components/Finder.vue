@@ -3,11 +3,12 @@
 
   
   <div v-bind:hidden="!visible" style="height:100vh;maxheight:100vh;overflow:auto">
+  
     <v-dialog v-model="openFilter" persistent>
       <v-card>
       <v-card-title>Фильтровка и сортировка</v-card-title>
       <div style="height:60vh;maxheight:60vh;overflow:auto">
-        <v-simple-table v-if="!load" dense light>
+        <v-simple-table v-if="!load" dense light tabindex="0">
           <template v-slot:default>
             <tbody>
               <tr v-for="(column, index) in OpenMapData().Fcols" :key="column.FieldName" style="background-color:white;" >
@@ -40,7 +41,6 @@
 
     </v-dialog>
 
-    
     <div v-bind:hidden="mode!='grid'" style="height:100vh;maxheight:100vh;overflow:auto">
       <v-app-bar app  v-if="!stateDrawer" max-width="100vw" height="65">
         <v-app-bar-nav-icon v-if="(editid == null)" @click="mainObj.drawer = !mainObj.drawer"></v-app-bar-nav-icon>
@@ -142,18 +142,20 @@
                 </template>
               </tr>
             </thead>
-            <tbody v-if="(nupdate > 0)">
+            <tbody v-if="(nupdate > 0)" ref="mainGrid" tabindex="-1">
               <tr 
                 v-for="(row, index) in OpenMapData().MainTab"
                 :key="index"
                 @click="handleClick(index)"
                 v-bind:style="{'background-color': (index==current)?selectedColor:'white'}"
               >
-                <template v-for="column in OpenMapData().Fcols">
+                <template v-for="(column) in OpenMapData().Fcols">
                 <td
                   v-if="column.DisplayFormat!='text' && column.DisplayFormat!='hide' && column.DisplayFormat!='password'"
                   :key="column.FieldName"
-                >{{(column.DisplayFormat == "") ? row[column.FieldName] : dateformat(row[column.FieldName], column.DisplayFormat)}}</td>
+                >
+                
+                {{(column.DisplayFormat == "") ? row[column.FieldName] : dateformat(row[column.FieldName], column.DisplayFormat)}}</td>
                 </template>
               </tr>
               
@@ -267,6 +269,7 @@ let Finder = {
     dispIndex: 0,
     //24.05.2022
     gridHeight: mainObj.gridHeight(), 
+    gridFocus:false
   }),
   props: {
     visible: {
@@ -405,17 +408,75 @@ let Finder = {
     setFilter: function(b) {
       this.openFilter = b;
     },
+    
+    enterKeyDown: function(event)
+    {
+      
+      if (this.mode == "grid")
+      {
+          if (this.openFilter)
+            return
+          
+          if (event.code == "Enter")
+              this.handleClick(this.OpenMapData().curRow);
+
+          /*
+          if (event.code == "ArrowDown")
+          {
+              this.handleClick(this.OpenMapData().curRow + 1);
+          }
+          if (event.code == "ArrowUp")
+          {
+              this.handleClick(this.OpenMapData().curRow - 1);
+          }
+
+          if (event.code == "PageDown")
+          {
+              this.handleClick(this.OpenMapData().curRow + 8);
+          }
+          if (event.code == "PageUp")
+          {
+              this.handleClick(this.OpenMapData().curRow - 8);
+          }
+          */
+      }
+      else
+      {
+        /*
+        if (event.code == "Escape")
+          this.closeEditor()
+        */  
+      }
+      
+    },
 
     handleClick: function(index) {
       if (this.OpenMapData().curRow == index) {
         //double click
+        if (index < 0)
+          return
         this.current = index;
         if (this.editid == null) {
-          if (this.OpenMapData().EditProc) this.edit();
+          if (this.OpenMapData().EditProc) 
+          {
+            this.edit();
+          }
           else if (this.OpenMapData().KeyValue) this.openDetail();
           else this.edit();
         } else this.selectFinder(this.editid);
       } else {
+        let data = this.OpenMapData()
+        let maxr = Math.min(data.TotalTab[0].n_total - (data.page - 1)* data.nrows, data.nrows)
+        if (index < 0)
+        {
+          index = 0;
+        }
+        if (index >= maxr)  
+        {
+          index = maxr - 1
+        }
+        if (index < 0)
+          return;
         this.OpenMapData().curRow = index;
         this.current = index;
       }
@@ -690,6 +751,7 @@ let Finder = {
     },
     closeEditor: function() {
       this.mode = "grid";
+      
     },
     add: function() {
       let data = this.OpenMapData();
@@ -777,6 +839,12 @@ let Finder = {
       this.mode = "setting";
     }
   },
+  updated: function() {
+    if (this.$refs.mainGrid)
+    {
+      this.$refs.mainGrid.focus();
+    }
+  },
   mounted: async function() {
     let OpenMapData = this.OpenMapData;
     let OpenMapId = this.OpenMapId;
@@ -815,6 +883,10 @@ let Finder = {
     //global обновление 31/07/2022
     mid.extupdate = this.extupdate;
 
+    //нажатие клавиш 03.08.2022
+    mid.enterKeyDown = this.enterKeyDown;
+    
+
     const url = baseUrl + "React/FinderStart";
     let bd = new FormData();
     bd.append("id", IdDeclare);
@@ -851,6 +923,8 @@ let Finder = {
       if (mid.title) this.Descr = this.Descr + " (" + mid.title + ")";
 
       setLoad(false);
+
+      
     
   }
 };

@@ -6,7 +6,7 @@ import vuetify from './plugins/vuetify';
 
 
 Vue.config.productionTip = true;
-const prodaction = true;
+const prodaction = false;
 const baseUrl = (prodaction) ? "" : " http://localhost:5000/";
 
 let start = "-1"
@@ -88,6 +88,18 @@ let mainObj = {
         value.resize()
     });
   },
+  
+  enterKeyDown: function(event) {
+    let data = openMap.get(mainObj.current)
+    if (!data)
+    {
+      return
+    }
+    if (data.enterKeyDown)
+      data.enterKeyDown(event)
+    
+  },
+  
   extupdate:function (tablename, id) {
     //Global update 31/07/2022
     openMap.forEach((value) => {
@@ -156,6 +168,9 @@ window.addEventListener('popstate', function() {
       mainObj.current = hi;
   }
 }, false);
+
+//нажатие клавиш 03/08/2022
+document.body.addEventListener('keydown', mainObj.enterKeyDown, true);
 
 Vue.component('uni-comp', {
   data: function () {
