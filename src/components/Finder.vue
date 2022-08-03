@@ -89,8 +89,13 @@
         class="mx-4"
         vertical
         ></v-divider>
-        <slot></slot>      
-        <v-text-field v-if="!load" 
+        <slot></slot>   
+        <v-btn icon key="8" @click="setSearchFocus()" v-if="!searchFocus">
+          <v-icon title="Поиск">mdi-magnify</v-icon>
+        </v-btn>
+        
+        
+        <v-text-field v-if="!load && searchFocus" 
             label="Поиск"
             dense
             filled
@@ -100,9 +105,12 @@
             single-line
             v-model="OpenMapData().SearchCols[0].FindString"
             @input="updateTab()"
+            @blur="exitSearch()"
+            ref = "search"
           ></v-text-field>
         
-        
+        <v-divider class="mx-4" vertical></v-divider>
+
         <template v-if="(editid != null)">
         <v-divider
         class="mx-4"
@@ -269,7 +277,7 @@ let Finder = {
     dispIndex: 0,
     //24.05.2022
     gridHeight: mainObj.gridHeight(), 
-    gridFocus:false
+    searchFocus:false
   }),
   props: {
     visible: {
@@ -409,18 +417,35 @@ let Finder = {
       this.openFilter = b;
     },
     
+    setSearchFocus: function() {
+      this.searchFocus = true;
+      this.$refs.search.click();
+    },
+    exitSearch: function ()
+    {
+      this.searchFocus = false
+      this.$refs.mainGrid.focus()
+    },
+
     enterKeyDown: function(event)
     {
-      
+      if (event.code != "Enter") return
       if (this.mode == "grid")
       {
           if (this.openFilter)
             return
           
+          
           if (event.code == "Enter")
+          {
+              if (this.searchFocus)
+                this.exitSearch()
               this.handleClick(this.OpenMapData().curRow);
+          }
 
-          /*
+          //if (this.searchFocus)  
+          //  return
+          
           if (event.code == "ArrowDown")
           {
               this.handleClick(this.OpenMapData().curRow + 1);
@@ -438,14 +463,14 @@ let Finder = {
           {
               this.handleClick(this.OpenMapData().curRow - 8);
           }
-          */
+          
       }
       else
       {
-        /*
+        
         if (event.code == "Escape")
           this.closeEditor()
-        */  
+       
       }
       
     },
