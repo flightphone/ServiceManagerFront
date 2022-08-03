@@ -90,7 +90,7 @@
         vertical
         ></v-divider>
         <slot></slot>   
-        <v-btn icon key="8" @click="setSearchFocus()" v-if="!searchFocus">
+        <v-btn icon key="18" @click="setSearchFocus()" v-if="!searchFocus">
           <v-icon title="Поиск">mdi-magnify</v-icon>
         </v-btn>
         
@@ -107,15 +107,13 @@
             @input="updateTab()"
             @blur="exitSearch()"
             ref = "search"
+            
           ></v-text-field>
+        
         
         <v-divider class="mx-4" vertical></v-divider>
 
         <template v-if="(editid != null)">
-        <v-divider
-        class="mx-4"
-        vertical
-        ></v-divider> 
           <v-btn icon title="Выбрать"  @click="selectFinder(editid)">
             <v-icon>mdi-check</v-icon>
           </v-btn>
@@ -150,7 +148,7 @@
                 </template>
               </tr>
             </thead>
-            <tbody v-if="(nupdate > 0)" ref="mainGrid" tabindex="-1">
+            <tbody v-if="(nupdate > 0)" ref="mainGrid" tabindex="-1" @keydown="enterKeyDownLocal">
               <tr 
                 v-for="(row, index) in OpenMapData().MainTab"
                 :key="index"
@@ -419,17 +417,24 @@ let Finder = {
     
     setSearchFocus: function() {
       this.searchFocus = true;
-      this.$refs.search.click();
+      setTimeout(()=>{this.$refs.search.$refs.input.focus()}, 0)
     },
     exitSearch: function ()
     {
       this.searchFocus = false
       this.$refs.mainGrid.focus()
     },
+    enterKeyDownLocal: function(event)
+    {
+      if (this.editid != null)
+        return this.enterKeyDown(event)
+      else  
+        return true;  
+    },
 
     enterKeyDown: function(event)
     {
-      if (event.code != "Enter") return
+      //if (event.code != "Enter") return
       if (this.mode == "grid")
       {
           if (this.openFilter)
@@ -463,6 +468,15 @@ let Finder = {
           {
               this.handleClick(this.OpenMapData().curRow - 8);
           }
+          if (event.code == "Home")
+          {
+              this.handleClick(0);
+          }
+          if (event.code == "End")
+          {
+              this.handleClick(this.OpenMapData().nrows);
+          }
+
           
       }
       else
@@ -472,6 +486,7 @@ let Finder = {
           this.closeEditor()
        
       }
+      return true;
       
     },
 
