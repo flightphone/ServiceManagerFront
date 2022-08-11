@@ -1,11 +1,11 @@
 <template>
     <div   v-bind:hidden="!visible" style="background-color: #84FFFF;height: 100%;" >
         <div style="background-color: white;text-align: center;position:absolute;left:0px;bottom:0px;width:100%;font-size: 11px">
-          ООО "СТЭК" © 2022
+          ООО ... © 2022
         </div>
       <v-app-bar app>
         <v-app-bar-nav-icon @click="mainObj.drawer = !mainObj.drawer"></v-app-bar-nav-icon>
-        <v-toolbar-title>Рабочее место оператора НСИ</v-toolbar-title>
+        <v-toolbar-title>Справочники</v-toolbar-title>
         <v-spacer></v-spacer>
       </v-app-bar>
       <v-main>

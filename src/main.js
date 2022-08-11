@@ -6,7 +6,7 @@ import vuetify from './plugins/vuetify';
 
 
 Vue.config.productionTip = true;
-const prodaction = true;
+const prodaction = false;
 const baseUrl = (prodaction) ? "" : " http://localhost:5000/";
 
 let start = "-1"
