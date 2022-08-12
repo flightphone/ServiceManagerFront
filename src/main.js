@@ -1,7 +1,8 @@
 import Vue from 'vue';
 import App from './App.vue';
 
-import Comp1 from './components/Comp1.vue';
+import Comp1 from './components/Finder.vue';
+import Comp2 from './components/Declare.vue';
 import vuetify from './plugins/vuetify';
 
 
@@ -9,24 +10,47 @@ Vue.config.productionTip = true;
 const prodaction = true;
 const baseUrl = (prodaction) ? "" : " http://localhost:5000/";
 
-let start = "-1"
 
-
+let start = -1
 let openMap = new Map();
+let openIDs = [];
+
+async function startup()
+{
+let url ="React/Banner";
+url = baseUrl + url;
+    const response = await fetch(url, {
+      method: "POST",
+      mode: prodaction ? "no-cors" : "cors",
+      cache: "no-cache",
+      credentials: prodaction ? "include" : "omit"
+    });
+let data = await response.json();
+mainObj.testApi = (data.Error == "OK")
+mainObj.admin = data.Admin
+start = "108"
+let Par = "168"
+let cnt = Comp2
+if (data.Admin)
+{
+  start = "109"
+  Par = "169"
+  cnt = Comp1
+}
+
 openMap.set(start,
   {
-    Control: Comp1,
-    Params: "150",
+    Control: cnt,
+    Params: Par,
     SQLParams: null,
     data: {}
   });
-
-let openIDs = [];
-  openIDs.push(start);  
-
+openIDs.push(start);  
 //21.07.2022
 window.location.hash = start  
+}
 
+startup()
 
 //запускаем нужную форму через стартовый якорь, например  #81 тарифы  
 let mainObj = {
@@ -55,7 +79,8 @@ let mainObj = {
 
   },
   selectedColor: "LightGreen",
-  testApi:true,
+  testApi:false,
+  admin:false,
   dateformat: function (d, f) {
     if (!d) return d;
 
@@ -146,6 +171,9 @@ let mainObj = {
     return data;
   }
 };
+
+
+
 
 
 

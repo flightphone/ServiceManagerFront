@@ -42,10 +42,10 @@
     </v-dialog>
 
     <div v-bind:hidden="mode!='grid'" style="height:100vh;maxheight:100vh;overflow:auto">
-      <v-app-bar app  v-if="!stateDrawer" max-width="100vw" height="65">
-        <v-app-bar-nav-icon v-if="(editid == null)" @click="mainObj.drawer = !mainObj.drawer"></v-app-bar-nav-icon>
-        <v-btn icon key="0" @click="back();">
-            <v-icon title="Назад">mdi-arrow-left</v-icon>
+      <v-app-bar app  v-if="!stateDrawer" max-width="100vw" height="65" :dark="mainObj.admin" :color="mainObj.admin?'primary':'white'">
+        <v-app-bar-nav-icon v-if="(editid == null) && (id.indexOf('_') == -1)" @click="mainObj.drawer = !mainObj.drawer"></v-app-bar-nav-icon>
+        <v-btn icon v-if="(editid == null) && (id.indexOf('_') > -1)" @click="back();">
+          <v-icon title="Закрыть">mdi-window-close</v-icon>
         </v-btn>
         <v-toolbar-title>{{Descr}}</v-toolbar-title>
         <v-spacer></v-spacer>
