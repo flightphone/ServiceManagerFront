@@ -506,18 +506,20 @@ let Finder = {
         } else this.selectFinder(this.editid);
       } else {
         let data = this.OpenMapData()
-        let maxr = Math.min(data.TotalTab[0].n_total - (data.page - 1)* data.nrows, data.nrows)
+        let maxr = data.MainTab.length
         if (index < 0)
         {
           index = 0;
         }
+        
         if (index >= maxr)  
         {
           index = maxr - 1
         }
+        
         if (index < 0)
           return;
-        this.OpenMapData().curRow = index;
+        data.curRow = index;
         this.current = index;
       }
     },
