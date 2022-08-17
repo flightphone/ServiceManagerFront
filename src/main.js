@@ -142,19 +142,21 @@ let mainObj = {
     };
     
     //пересоздаем заново
+    /*
     if (openMap.get(newid) != null)
     {
       openMap.delete(newid);
     }
     openMap.set(newid, obj);
     openIDs.push(newid);
+    */
 
-    /*
+    
     if (openMap.get(newid) == null) {
       openMap.set(newid, obj);
       openIDs.push(newid);
      }
-   */
+    
     mainObj.current = newid;
     window.location.hash = newid;
   },
