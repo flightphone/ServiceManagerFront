@@ -54,6 +54,7 @@ export default {
     findData: Object,
     par: Function,
     action:Object
+    
   },
   methods: {
     onChangePage: function(p)

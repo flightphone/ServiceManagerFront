@@ -171,7 +171,7 @@
             >
             <tr>
             <td colspan="100">
-              <Pagination :findData="OpenMapData()" :par="onChangePage" :action="action"/>
+              <Pagination :findData="OpenMapData()" :par="onChangePage" :action="action" />
             </td>
             </tr>
             </tfoot>
@@ -708,6 +708,7 @@ let Finder = {
         if (this.mode != "grid");
           this.mode = "grid";
         this.nupdate = this.nupdate + 1;
+        this.action = this.action + 1;
         this.openFilter = false;
         //Сигнал в слоты 22/05/2022
         if (openMap.get(this.id).updateTab != null)
