@@ -1,8 +1,8 @@
 import Vue from 'vue';
 import App from './App.vue';
 
-import Comp1 from './components/Finder.vue';
-import Comp2 from './components/Declare.vue';
+import Finder from './components/Finder.vue';
+import Declare from './components/Declare.vue';
 import vuetify from './plugins/vuetify';
 
 
@@ -27,15 +27,15 @@ url = baseUrl + url;
     });
 let data = await response.json();
 mainObj.testApi = (data.Error == "OK")
+
+//Запуск первой формы к которой есть доступ 20.08.2022
 mainObj.admin = data.Admin
-start = "108"
-let Par = "168"
-let cnt = Comp2
-if (data.Admin)
+start = data.items[0].id
+let Par = data.items[0].iddeclare
+let cnt = Finder
+if (data.items[0].link1 == "Declare")
 {
-  start = "109"
-  Par = "169"
-  cnt = Comp1
+  cnt = Declare
 }
 
 openMap.set(start,

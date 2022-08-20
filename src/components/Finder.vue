@@ -83,6 +83,9 @@
                 @click="editSetting()"
                 v-if="OpenMapData().IdDeclareSet && !load">
                   <v-icon title="Параметры">mdi-cog</v-icon>
+              </v-btn>
+              <v-btn icon key="7" @click="updateTab()">
+                    <v-icon title="Обновить">mdi-autorenew</v-icon>
               </v-btn>                
         </template>  
         <v-divider
@@ -105,7 +108,6 @@
             single-line
             v-model="OpenMapData().SearchCols[0].FindString"
             @input="updateTab()"
-            @blur="exitSearch()"
             ref = "search"
             
           ></v-text-field>

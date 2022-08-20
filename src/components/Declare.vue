@@ -46,7 +46,7 @@
       </v-btn>
 
       <v-btn icon title="Очистить настройки колонок" @click="del()">
-        <v-icon>mdi-autorenew</v-icon>
+        <v-icon>mdi-window-close</v-icon>
       </v-btn>
 
       <v-divider
@@ -54,53 +54,6 @@
       vertical
       ></v-divider>
       
-      
-<!--      
-      <v-tooltip left>
-      <template v-slot:activator="{ on, attrs }">   
-      <v-btn icon @click="open()"
-          v-bind="attrs"
-          v-on="on"
-      >
-        <v-icon>mdi-magnify</v-icon>
-      </v-btn>
-      </template>
-      <span>Просмотр данных</span>
-      </v-tooltip>
-
-      <v-tooltip left>
-      <template v-slot:activator="{ on, attrs }">   
-      <v-btn icon @click="beginEdit()"
-          v-bind="attrs"
-          v-on="on"
-      >
-        <v-icon>mdi-pencil</v-icon>
-      </v-btn>
-      </template>
-      <span>Редактор колонок</span>
-      </v-tooltip>
-
-
-      <v-btn icon @click="update()">
-        <v-icon>mdi-download</v-icon>
-      </v-btn>
-      <v-btn icon @click="save()">
-        <v-icon>mdi-content-save</v-icon>
-      </v-btn>
-
-    
-      <v-tooltip left>
-      <template v-slot:activator="{ on, attrs }">   
-      <v-btn icon @click="del()"
-          v-bind="attrs"
-          v-on="on"
-      >
-        <v-icon>mdi-delete</v-icon>
-      </v-btn>
-      </template>
-      <span>Очистить настройки колонок</span>
-      </v-tooltip>
-    -->  
     </template>
   </Finder>
   </v-fragment>
