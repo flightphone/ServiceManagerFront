@@ -15,42 +15,55 @@ let start = -1
 let openMap = new Map();
 let openIDs = [];
 
-async function startup()
+async function testnci()
 {
-let url ="React/Banner";
-url = baseUrl + url;
-    const response = await fetch(url, {
-      method: "POST",
-      mode: prodaction ? "no-cors" : "cors",
-      cache: "no-cache",
-      credentials: prodaction ? "include" : "omit"
-    });
-let data = await response.json();
-mainObj.testApi = (data.Error == "OK")
-
-//Запуск первой формы к которой есть доступ 20.08.2022
-mainObj.admin = data.Admin
-start = data.items[0].id
-let Par = data.items[0].iddeclare
-let cnt = Finder
-if (data.items[0].link1 == "Declare")
-{
-  cnt = Declare
+  let url = "MFT/TestApi";
+  url = baseUrl + url;
+  const response = await fetch(url, {
+    method: "POST",
+    mode: prodaction ? "no-cors" : "cors",
+    cache: "no-cache",
+    credentials: prodaction ? "include" : "omit"
+  });
+  let data = await response.json();
+  mainObj.testApi = (data.Error == "OK")
 }
 
-openMap.set(start,
-  {
-    Control: cnt,
-    Params: Par,
-    SQLParams: null,
-    data: {}
+async function startup() {
+  let url = "React/Banner";
+  url = baseUrl + url;
+  const response = await fetch(url, {
+    method: "POST",
+    mode: prodaction ? "no-cors" : "cors",
+    cache: "no-cache",
+    credentials: prodaction ? "include" : "omit"
   });
-openIDs.push(start);  
-//21.07.2022
-window.location.hash = start  
+  let data = await response.json();
+  mainObj.testApi = false;
+
+  //Запуск первой формы к которой есть доступ 20.08.2022
+  mainObj.admin = data.Admin
+  start = data.items[0].id
+  let Par = data.items[0].iddeclare
+  let cnt = Finder
+  if (data.items[0].link1 == "Declare") {
+    cnt = Declare
+  }
+
+  openMap.set(start,
+    {
+      Control: cnt,
+      Params: Par,
+      SQLParams: null,
+      data: {}
+    });
+  openIDs.push(start);
+  //21.07.2022
+  window.location.hash = start
 }
 
 startup()
+testnci()
 
 //запускаем нужную форму через стартовый якорь, например  #81 тарифы  
 let mainObj = {
@@ -79,12 +92,12 @@ let mainObj = {
 
   },
   selectedColor: "LightGreen",
-  testApi:false,
-  admin:false,
+  testApi: false,
+  admin: false,
   dateformat: function (d, f) {
     if (!d) return d;
 
-    if (f=="text" || f == "hide" || f == 'password' || f== 'disabled')
+    if (f == "text" || f == "hide" || f == 'password' || f == 'disabled')
       return d;
 
     if (d.length < 19) {
@@ -113,34 +126,32 @@ let mainObj = {
         value.resize()
     });
   },
-  
-  enterKeyDown: function(event) {
+
+  enterKeyDown: function (event) {
     let data = openMap.get(mainObj.current)
-    if (!data)
-    {
+    if (!data) {
       return
     }
     if (data.enterKeyDown)
       data.enterKeyDown(event)
-    
+
   },
-  
-  extupdate:function (tablename, id) {
+
+  extupdate: function (tablename, id) {
     //Global update 31/07/2022
     openMap.forEach((value) => {
       if (value.extupdate)
         value.extupdate(tablename, id)
     });
   },
-  openFinder: function(iddeclare, newid, Finder)
-  {
+  openFinder: function (iddeclare, newid, Finder) {
     let obj = {
       Control: Finder,
       Params: iddeclare,
       SQLParams: null,
       data: {}
     };
-    
+
     //пересоздаем заново
     /*
     if (openMap.get(newid) != null)
@@ -151,16 +162,16 @@ let mainObj = {
     openIDs.push(newid);
     */
 
-    
+
     if (openMap.get(newid) == null) {
       openMap.set(newid, obj);
       openIDs.push(newid);
-     }
-    
+    }
+
     mainObj.current = newid;
     window.location.hash = newid;
   },
-  fetch: async function(url, bd){
+  fetch: async function (url, bd) {
     url = baseUrl + url;
     const response = await fetch(url, {
       method: "POST",
@@ -185,17 +196,16 @@ let mainObj = {
 
 
 //размеры окон 24/05/2022
-window.addEventListener('resize', function() {
+window.addEventListener('resize', function () {
   if (mainObj.resize)
-      mainObj.resize()
+    mainObj.resize()
 }, true);
 
 //история переходов
-window.addEventListener('popstate', function() {
+window.addEventListener('popstate', function () {
   let hi = window.location.hash.replace('#', '');
-  if (hi!=mainObj.current && openIDs.includes(hi))
-  {
-      mainObj.current = hi;
+  if (hi != mainObj.current && openIDs.includes(hi)) {
+    mainObj.current = hi;
   }
 }, false);
 

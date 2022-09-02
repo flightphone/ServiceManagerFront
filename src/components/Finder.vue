@@ -638,12 +638,29 @@ let Finder = {
       if (mid.DelProc.toLowerCase().indexOf("_del_1") > -1) {
         SQLParams["AUDTUSER"] = mid.Account;
       }
+      let row = mid.MainTab[mid.curRow]
+
+      //Для АПИ 23.08.2022
+      
+      let oldrow = {}
+      mid.ColumnTab.map(column => {
+        oldrow[column] = row[column] == null ? "" : row[column];
+      });
+      mid.Fcols.map(column => {
+        if (column.DisplayFormat != "") {
+          oldrow[column.FieldName] = this.dateformat(
+            oldrow[column.FieldName],
+            column.DisplayFormat
+          );
+        }
+      });
 
       const url = baseUrl + "React/exec";
       let bd = new FormData();
 
       bd.append("EditProc", mid.DelProc);
       bd.append("SQLParams", JSON.stringify(SQLParams));
+      bd.append("OldValue", JSON.stringify(oldrow));
       bd.append("KeyF", mid.KeyF);
       bd.append("IdDeclare", this.params);
       bd.append("mode", "delete");
@@ -731,8 +748,31 @@ let Finder = {
       this.updateTab();
     },
     save: async function() {
+      
+      
       let data = this.OpenMapData();
       //default values
+      let row = {};
+      if (this.mode == "edit") {
+        let c = data.curRow;
+        row = data.MainTab[c];
+      }
+      //Для АПИ 23.08.2022
+      let oldrow = {}
+      data.ColumnTab.map(column => {
+        oldrow[column] = row[column] == null ? "" : row[column];
+      });
+      data.Fcols.map(column => {
+        if (column.DisplayFormat != "") {
+          oldrow[column.FieldName] = this.dateformat(
+            oldrow[column.FieldName],
+            column.DisplayFormat
+          );
+        }
+      });
+      
+      
+      
       for (let f in data.DefaultValues) {
         data.WorkRow[f] = data.DefaultValues[f];
       }
@@ -742,6 +782,7 @@ let Finder = {
       }
       //27.07.2022
       this.postEdit(data);
+      
       let SQLParams = {};
       data.ReferEdit.SaveFieldList.map(f => {
         SQLParams[f] = data.WorkRow[f];
@@ -752,6 +793,7 @@ let Finder = {
 
       bd.append("EditProc", data.EditProc);
       bd.append("SQLParams", JSON.stringify(SQLParams));
+      bd.append("OldValue", JSON.stringify(oldrow));
       bd.append("KeyF", data.KeyF);
       bd.append("IdDeclare", this.params);
       bd.append("mode", this.mode);
@@ -777,11 +819,7 @@ let Finder = {
         }
       }
 
-      let row = {};
-      if (this.mode == "edit") {
-        let c = data.curRow;
-        row = data.MainTab[c];
-      }
+      
       data.ColumnTab.map(column => {
         row[column] = data.WorkRow[column];
       });
