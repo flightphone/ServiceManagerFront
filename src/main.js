@@ -1,32 +1,53 @@
 import Vue from 'vue';
 import App from './App.vue';
 
-import Comp1 from './components/Comp1.vue';
+import Finder from './components/Finder.vue';
+import Declare from './components/Declare.vue';
 import vuetify from './plugins/vuetify';
 
 
 Vue.config.productionTip = true;
-const prodaction = true;
+const prodaction = false;
 const baseUrl = (prodaction) ? "" : " http://localhost:5000/";
 
-let start = "-1"
-
-
+let start = -1
 let openMap = new Map();
-openMap.set(start,
-  {
-    Control: Comp1,
-    Params: "150",
-    SQLParams: null,
-    data: {}
-  });
-
 let openIDs = [];
-  openIDs.push(start);  
+//17.01.2022
+async function startup() {
+  let url = "React/Banner";
+  url = baseUrl + url;
+  const response = await fetch(url, {
+    method: "POST",
+    mode: prodaction ? "no-cors" : "cors",
+    cache: "no-cache",
+    credentials: prodaction ? "include" : "omit"
+  });
+  let data = await response.json();
+  //mainObj.testApi = false;
 
-//21.07.2022
-window.location.hash = start  
+  //Запуск первой формы к которой есть доступ 20.08.2022
+  mainObj.admin = data.Admin
+  start = data.items[0].id
+  let Par = data.items[0].iddeclare
+  let cnt = Finder
+  if (data.items[0].link1 == "Declare") {
+    cnt = Declare
+  }
 
+  openMap.set(start,
+    {
+      Control: cnt,
+      Params: Par,
+      SQLParams: null,
+      data: {}
+    });
+  openIDs.push(start);
+  //21.07.2022
+  window.location.hash = start
+}
+
+startup()
 
 //запускаем нужную форму через стартовый якорь, например  #81 тарифы  
 let mainObj = {
@@ -104,19 +125,21 @@ let mainObj = {
     };
     
     //пересоздаем заново
+    /*
     if (openMap.get(newid) != null)
     {
       openMap.delete(newid);
     }
     openMap.set(newid, obj);
     openIDs.push(newid);
+    */
 
-    /*
+    
     if (openMap.get(newid) == null) {
       openMap.set(newid, obj);
       openIDs.push(newid);
      }
-   */
+   
     mainObj.current = newid;
     window.location.hash = newid;
   },
