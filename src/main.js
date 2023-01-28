@@ -8,7 +8,7 @@ import vuetify from './plugins/vuetify';
 
 Vue.config.productionTip = true;
 const prodaction = false;
-const baseUrl = (prodaction) ? "" : " http://localhost:5000/";
+const baseUrl = (prodaction) ? "" : " http://127.0.0.1:5000/";
 
 let start = -1
 let openMap = new Map();
